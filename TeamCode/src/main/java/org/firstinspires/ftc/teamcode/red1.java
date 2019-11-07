@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.lib.Configurator;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 
 @Autonomous(name="red1")
-public class EncoderAutoFull extends LinearOpMode {
+public class red1 extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
 
