@@ -130,7 +130,7 @@ public class WheelController {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public double cubed(double input) {
-        return input * input * input;
+    public double sixthPowerOf(double input) {
+        return input * input * input * input * input * input;
     }
 }

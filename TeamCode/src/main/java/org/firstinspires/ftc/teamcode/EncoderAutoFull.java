@@ -11,34 +11,24 @@ import org.firstinspires.ftc.teamcode.lib.WheelController;
 @Autonomous(name="Autonomous")
 public class EncoderAutoFull extends LinearOpMode {
     Configurator config;
-    AutoController autoController;
+    WheelController wheelController;
 
     public void runOpMode(){
         config = new Configurator(this);
-        autoController = new AutoController(config);
+        wheelController = new WheelController(config);
         Servo foundationGrabber;
         foundationGrabber = hardwareMap.servo.get("foundationGrabber");
         waitForStart();
+        wheelController.runWithoutEncoder();
 
-        //moves forward to foundation
-        autoController.moveForwardCentimeters(152.4,0.5);
-        autoController.moveXY(0.5,0);
-        sleep(1000);
-        autoController.stopWheels();
+        //moves sideways to accommodate for other bot
+        wheelController.moveXY(0.5,0);
+        sleep(500);
+        wheelController.stopWheels();
 
-        //lifts arm and then drops it to grab foundation
-        foundationGrabber.setPosition(0);
-        foundationGrabber.setPosition(1);
-
-        //pushes foundation into the corner
-        autoController.moveXY(-0.5,0);
-        sleep(1000);
-        autoController.stopWheels();
-
-        //releases foundation
-        foundationGrabber.setPosition(0);
-
-        //moves backward under the skybridge
-        autoController.moveForwardCentimeters(91.4, 0.5);
+        //moves forward under the skybridge
+        wheelController.moveXY(0,0.5);
+        sleep(1250);
+        wheelController.stopWheels();
     }
 }
