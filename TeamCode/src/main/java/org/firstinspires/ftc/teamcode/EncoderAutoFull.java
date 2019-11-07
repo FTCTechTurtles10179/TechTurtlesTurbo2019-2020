@@ -19,6 +19,7 @@ public class EncoderAutoFull extends LinearOpMode {
         Servo foundationGrabber;
         foundationGrabber = hardwareMap.servo.get("foundationGrabber");
         waitForStart();
+        wheelController.runWithoutEncoder();
 
         //moves sideways to accommodate for other bot
         wheelController.moveXY(0.5,0);
