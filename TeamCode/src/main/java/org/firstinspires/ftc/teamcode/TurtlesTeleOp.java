@@ -29,18 +29,27 @@ public class TurtlesTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        wheelController.moveXYTurn(wheelController.cubed(gamepad1.right_stick_x), wheelController.cubed(gamepad1.left_stick_y), -wheelController.cubed(gamepad1.left_stick_x));
-        armMotor.setPower(Range.clip(-wheelController.cubed(gamepad2.right_stick_y) + 0.05, -1, 1));
+        wheelController.moveXYTurn(wheelController.sixthPowerOf(gamepad1.right_stick_x), wheelController.sixthPowerOf(gamepad1.left_stick_y), -wheelController.sixthPowerOf(gamepad1.left_stick_x));
+        armMotor.setPower(Range.clip(-wheelController.sixthPowerOf(gamepad2.right_stick_y) + 0.05, -1, 1));
 
         if (gamepad1.b) wheelController.runWithoutEncoder();
         if (gamepad1.a) wheelController.runUsingEncoder();
+        if (gamepad1.x) {
+            wheelController.moveXYTurn((wheelController.sixthPowerOf(gamepad1.right_stick_x)/2), (wheelController.sixthPowerOf(gamepad1.left_stick_y)/2), (-wheelController.sixthPowerOf(gamepad1.left_stick_x)/2));
+        }
+        if (gamepad1.y){
+            wheelController.moveXYTurn(wheelController.sixthPowerOf(gamepad1.right_stick_x), wheelController.sixthPowerOf(gamepad1.left_stick_y), -wheelController.sixthPowerOf(gamepad1.left_stick_x));
+        }
 
         if (gamepad2.a) claw.setPosition(0);
         if (gamepad2.b) claw.setPosition(1);
         if (gamepad2.x) foundationGrabber.setPosition(1);
         if (gamepad2.y) foundationGrabber.setPosition(0);
 
-        telemetry.addData("armEncoder", armMotor.getCurrentPosition());
+        telemetry.addData("frontLeftEncoder", wheelController.frontLeft.getCurrentPosition());
+        telemetry.addData("frontRightEncoder", wheelController.frontRight.getCurrentPosition());
+        telemetry.addData("backLeftEncoder", wheelController.backLeft.getCurrentPosition());
+        telemetry.addData("backRightEncoder", wheelController.backRight.getCurrentPosition());
         telemetry.update();
     }
 }

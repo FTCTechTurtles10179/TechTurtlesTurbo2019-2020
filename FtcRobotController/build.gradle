@@ -1,61 +1,27 @@
+//
+// build.gradle in FtcRobotController
+//
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
 
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 35
-        versionName "5.3"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    compileSdkVersion 28
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
-apply from: '../moduleFlavors.gradle'
-
-dependencies {
-    /*
-     * Other Modules
-     */
-    turboImplementation project(':FtcCommon')
-    turboImplementation project(':RobotCore')
-    turboImplementation project(':Inspection')
-    turboImplementation project(':Blocks')
-    turboImplementation project(':Hardware')
-    turboImplementation project(':RobotServer')
-    turboImplementation project(':OpenRC')
-
-    extremeTurboImplementation project(':FtcCommon')
-    extremeTurboImplementation project(':RobotCore')
-    extremeTurboImplementation project(':Inspection')
-    extremeTurboImplementation project(':Hardware')
-    extremeTurboImplementation project(':OpenRC')
-
-    stockApi 'org.openftc:ftccommon-stock:5.3'
-    stockApi 'org.openftc:robotcore-stock:5.3'
-    stockApi 'org.openftc:inspection-stock:5.3'
-    stockApi 'org.openftc:blocks-stock:5.3'
-    stockApi 'org.openftc:hardware-stock:5.3'
-    stockApi 'org.openftc:onbotjava-stock:5.3'
-    stockApi 'org.openftc:robotserver-stock:5.3'
-    stockApi 'com.android.support:support-compat:26.0.0'
-
-    /*
-     * Things needed regardless of turbo/extremeTurbo/stock
-     */
-    stockApi 'com.android.support:support-annotations:28.0.0'
-    stockApi 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
-    stockApi 'org.openftc:tfod-ftc-repackaged:5.0'
-
-    /*
-     * External
-     */
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+repositories {
+    flatDir {
+        dirs '../libs'
+    }
 }
+
+apply from: 'build.release.gradle'

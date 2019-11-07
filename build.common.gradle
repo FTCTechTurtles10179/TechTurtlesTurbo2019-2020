@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     signingConfigs {
         debug {
@@ -40,7 +40,6 @@ android {
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 19
         targetSdkVersion 26
-        multiDexEnabled false
 
         /**
          * We keep the versionCode and versionName of robot controller applications in sync with
@@ -78,7 +77,7 @@ android {
             // Disable debugging for release versions so it can be uploaded to Google Play.
             //debuggable true
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters "armeabi-v7a", "arm64-v8a"
             }
         }
         debug {
@@ -86,7 +85,7 @@ android {
             jniDebuggable true
             renderscriptDebuggable true
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters "armeabi-v7a", "arm64-v8a"
             }
         }
     }
@@ -102,11 +101,9 @@ android {
     }
 }
 
-apply from: '../moduleFlavors.gradle'
-
 repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
 }
-//apply from: 'build.release.gradle'
+apply from: 'build.release.gradle'
