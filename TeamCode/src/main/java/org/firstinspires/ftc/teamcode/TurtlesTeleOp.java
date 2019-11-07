@@ -29,16 +29,16 @@ public class TurtlesTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        wheelController.moveXYTurn(wheelController.sixthPowerOf(gamepad1.right_stick_x), wheelController.sixthPowerOf(gamepad1.left_stick_y), -wheelController.sixthPowerOf(gamepad1.left_stick_x));
-        armMotor.setPower(Range.clip(-wheelController.sixthPowerOf(gamepad2.right_stick_y) + 0.05, -1, 1));
+        wheelController.moveXYTurn(wheelController.smooth(gamepad1.right_stick_x), wheelController.smooth(gamepad1.left_stick_y), -wheelController.smooth(gamepad1.left_stick_x));
+        armMotor.setPower(Range.clip(-wheelController.smooth(gamepad2.right_stick_y) + 0.05, -1, 1));
 
         if (gamepad1.b) wheelController.runWithoutEncoder();
         if (gamepad1.a) wheelController.runUsingEncoder();
         if (gamepad1.x) {
-            wheelController.moveXYTurn((wheelController.sixthPowerOf(gamepad1.right_stick_x)/2), (wheelController.sixthPowerOf(gamepad1.left_stick_y)/2), (-wheelController.sixthPowerOf(gamepad1.left_stick_x)/2));
+            wheelController.moveXYTurn((wheelController.smooth(gamepad1.right_stick_x)/2), (wheelController.smooth(gamepad1.left_stick_y)/2), (-wheelController.smooth(gamepad1.left_stick_x)/2));
         }
         if (gamepad1.y){
-            wheelController.moveXYTurn(wheelController.sixthPowerOf(gamepad1.right_stick_x), wheelController.sixthPowerOf(gamepad1.left_stick_y), -wheelController.sixthPowerOf(gamepad1.left_stick_x));
+            wheelController.moveXYTurn(wheelController.smooth(gamepad1.right_stick_x), wheelController.smooth(gamepad1.left_stick_y), -wheelController.smooth(gamepad1.left_stick_x));
         }
 
         if (gamepad2.a) claw.setPosition(0);
