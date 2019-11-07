@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.lib.AutoController;
 import org.firstinspires.ftc.teamcode.lib.Configurator;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 
-@Autonomous(name="Autonomous")
+@Autonomous(name="red1")
 public class EncoderAutoFull extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
@@ -22,7 +22,7 @@ public class EncoderAutoFull extends LinearOpMode {
         wheelController.runWithoutEncoder();
 
         //moves sideways to accommodate for other bot
-        wheelController.moveXY(0.5,0);
+        wheelController.moveXY(-0.5,0);
         sleep(500);
         wheelController.stopWheels();
 
