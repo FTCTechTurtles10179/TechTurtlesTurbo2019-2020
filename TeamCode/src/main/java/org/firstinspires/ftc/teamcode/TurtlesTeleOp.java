@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.Configurator;
+import org.firstinspires.ftc.teamcode.lib.Smoother;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 
 @TeleOp(name="TeleOp", group="default")
@@ -17,6 +18,11 @@ public class TurtlesTeleOp extends OpMode {
     DcMotor armMotor;
     Servo claw;
     Servo foundationGrabber;
+
+    double g1OldRStickX = 0;
+    double g1OldLStickY = 0;
+    double g1OldLStickX = 0;
+    double g2OldRStickY = 0;
 
     @Override
     public void init() {
@@ -29,17 +35,11 @@ public class TurtlesTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        wheelController.moveXYTurn(wheelController.smooth(gamepad1.right_stick_x), wheelController.smooth(gamepad1.left_stick_y), -wheelController.smooth(gamepad1.left_stick_x));
-        armMotor.setPower(Range.clip(-wheelController.smooth(gamepad2.right_stick_y) + 0.05, -1, 1));
+        wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x, g1OldRStickX), Smoother.smooth(gamepad1.left_stick_y, g1OldLStickY), -Smoother.smooth(gamepad1.left_stick_x, g1OldLStickX));
+        armMotor.setPower(Range.clip(-Smoother.smooth(gamepad2.right_stick_y, g2OldRStickY) + 0.05, -1, 1));
 
         if (gamepad1.b) wheelController.runWithoutEncoder();
         if (gamepad1.a) wheelController.runUsingEncoder();
-        if (gamepad1.x) {
-            wheelController.moveXYTurn((wheelController.smooth(gamepad1.right_stick_x)/2), (wheelController.smooth(gamepad1.left_stick_y)/2), (-wheelController.smooth(gamepad1.left_stick_x)/2));
-        }
-        if (gamepad1.y){
-            wheelController.moveXYTurn(wheelController.smooth(gamepad1.right_stick_x), wheelController.smooth(gamepad1.left_stick_y), -wheelController.smooth(gamepad1.left_stick_x));
-        }
 
         if (gamepad2.a) claw.setPosition(0);
         if (gamepad2.b) claw.setPosition(1);
@@ -51,5 +51,10 @@ public class TurtlesTeleOp extends OpMode {
         telemetry.addData("backLeftEncoder", wheelController.backLeft.getCurrentPosition());
         telemetry.addData("backRightEncoder", wheelController.backRight.getCurrentPosition());
         telemetry.update();
+
+        g1OldRStickX = gamepad1.right_stick_x;
+        g1OldLStickY = gamepad1.left_stick_y;
+        g1OldLStickX = gamepad1.left_stick_x;
+        g2OldRStickY = gamepad1.right_stick_y;
     }
 }

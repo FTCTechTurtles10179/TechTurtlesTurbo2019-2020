@@ -129,12 +129,4 @@ public class WheelController {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-
-    public double smooth(double input) {
-        if (Math.abs(input) <= 0.99) {
-            return 0.25 * input;
-        } else {
-            return input;
-        }
-    }
 }
