@@ -22,7 +22,7 @@ public class blue1 extends LinearOpMode{
         wheelController.runWithoutEncoder();
 
         //moves sideways to accommodate for other bot
-        wheelController.moveXY(0.5,0);
+        wheelController.moveXY(-0.5,0);
         sleep(500);
         wheelController.stopWheels();
 
