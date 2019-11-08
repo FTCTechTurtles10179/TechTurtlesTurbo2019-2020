@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.lib.WheelController;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name="red1")
+@Autonomous(name="red2")
 public class red2 extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
@@ -32,7 +32,7 @@ public class red2 extends LinearOpMode {
         wheelController.stopWheels();
 
         //moves forward under the skybridge
-        wheelController.moveXY(0,0.5);
+        wheelController.moveXY(0,-0.5);
         sleep(1250);
         wheelController.stopWheels();
     }
