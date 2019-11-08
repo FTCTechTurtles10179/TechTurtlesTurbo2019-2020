@@ -131,8 +131,8 @@ public class WheelController {
     }
 
     public double smooth(double input) {
-        if (Math.abs(input) <= 0.9) {
-            return 0.5 * input;
+        if (Math.abs(input) <= 0.99) {
+            return 0.25 * input;
         } else {
             return input;
         }
