@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.lib.Configurator;
 import org.firstinspires.ftc.teamcode.lib.Timeout;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 
-@Autonomous(name="NearLoadingTriangleRed")
+@Autonomous(name="NearLoadingTriangleBlue")
 public class NearLoadingTriangleBlue extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
@@ -37,6 +37,10 @@ public class NearLoadingTriangleBlue extends LinearOpMode {
         //move back to the loading zone
         wheelController.moveXY(0, 0.4);
         Timeout.waitUnlessInterrupt(4000, () -> (!opModeIsActive()));
+
+        //turn to nudge the foundation into the triangle
+        wheelController.moveTurn(-0.5);
+        Timeout.waitUnlessInterrupt(600, () -> (!opModeIsActive()));
 
         //park
         wheelController.stopWheels();
