@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.AutoController;
 import org.firstinspires.ftc.teamcode.lib.Configurator;
+import org.firstinspires.ftc.teamcode.lib.Timeout;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
+import org.firstinspires.ftc.teamcode.lib.util.BooleanCommand;
 
 @Autonomous(name="NearLoadingZoneTriangle")
 public class NearLoadingZoneTriangle extends LinearOpMode {
@@ -22,7 +24,7 @@ public class NearLoadingZoneTriangle extends LinearOpMode {
 
         //moves to the skybridge
         wheelController.moveXY(0,-0.5);
-        sleep(1200);
+        Timeout.waitUnlessInterrupt(1200, () -> {return opModeIsActive();});
 
         //park
         wheelController.stopWheels();

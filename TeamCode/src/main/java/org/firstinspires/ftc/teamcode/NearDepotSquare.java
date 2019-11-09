@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.AutoController;
 import org.firstinspires.ftc.teamcode.lib.Configurator;
+import org.firstinspires.ftc.teamcode.lib.Timeout;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 
 import static java.lang.Thread.sleep;
@@ -28,7 +29,7 @@ public class NearDepotSquare extends LinearOpMode {
 
         //move to the foundation
         wheelController.moveXY(0, -0.5);
-        sleep(800);
+        Timeout.waitUnlessInterrupt(800, () -> {return opModeIsActive();});
 
         //stop at the foundation
         wheelController.stopWheels();
@@ -38,7 +39,7 @@ public class NearDepotSquare extends LinearOpMode {
 
         //move back to the loading zone
         wheelController.moveXY(0, 0.5);
-        sleep(1100);
+        Timeout.waitUnlessInterrupt(1100, () -> {return opModeIsActive();});
 
         //park!
         wheelController.stopWheels();
