@@ -43,7 +43,7 @@ public class WheelController {
     }
 
     public void moveXY(double tx, double ty) {
-        moveXYTurn(tx, ty, 0);
+        moveXYTurn(tx, -ty, 0);
     }
 
     public void moveTurn(double tspeed) {
