@@ -35,7 +35,7 @@ public class TurtlesTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x, g1OldRStickX), Smoother.smooth(gamepad1.left_stick_y, g1OldLStickY), -Smoother.smooth(gamepad1.left_stick_x, g1OldLStickX));
+        wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x, g1OldRStickX), Smoother.smooth(gamepad1.left_stick_y, g1OldLStickY), Smoother.smooth(gamepad1.left_stick_x, g1OldLStickX));
         armMotor.setPower(Range.clip(-gamepad2.right_stick_y + 0.05, -1, 1));
 
         if (gamepad1.b) wheelController.runWithoutEncoder();

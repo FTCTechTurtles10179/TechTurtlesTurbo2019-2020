@@ -53,7 +53,7 @@ public class WheelController {
     public void moveXYTurn(double tx, double ty, double tspeed) {
         double x = -Range.clip(tx, -1, 1);
         double y = Range.clip(ty, -1, 1);
-        double speed = Range.clip(tspeed, -1, 1);
+        double speed = Range.clip(-tspeed, -1, 1);
 
         // The speed at which we will move the robot
         double r = Math.hypot(-x, y);
