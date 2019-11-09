@@ -26,9 +26,21 @@ public class red1 extends LinearOpMode {
         sleep(500);
         wheelController.stopWheels();
 
-        //moves forward under the skybridge
+        //moves backwards to the foundation
         wheelController.moveXY(0,-0.5);
-        sleep(1250);
+        sleep(3000);
+        wheelController.stopWheels();
+
+        foundationGrabber.setPosition(0);
+
+        wheelController.moveXY(0,0.5);
+        sleep(300);
+        wheelController.stopWheels();
+
+        foundationGrabber.setPosition(1);
+
+        wheelController.moveXY(0,0.5);
+        sleep(900);
         wheelController.stopWheels();
     }
 }
