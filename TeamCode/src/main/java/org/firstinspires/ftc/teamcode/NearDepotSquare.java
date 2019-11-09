@@ -1,15 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.AutoController;
 import org.firstinspires.ftc.teamcode.lib.Configurator;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 
-@Autonomous(name="blue1")
-public class blue1 extends LinearOpMode{
+import static java.lang.Thread.sleep;
+
+@Autonomous(name="NearDepotSquare")
+public class NearDepotSquare extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
 
@@ -21,14 +26,21 @@ public class blue1 extends LinearOpMode{
         waitForStart();
         wheelController.runWithoutEncoder();
 
-        //moves sideways to accommodate for other bot
-        wheelController.moveXY(-0.5,0);
-        sleep(500);
+        //move to the foundation
+        wheelController.moveXY(0, -0.5);
+        sleep(800);
+
+        //stop at the foundation
         wheelController.stopWheels();
 
-        //moves forward under the skybridge
-        wheelController.moveXY(0,-0.5);
-        sleep(1250);
+        //deploy the foundation grabber
+        foundationGrabber.setPosition(1);
+
+        //move back to the loading zone
+        wheelController.moveXY(0, 0.5);
+        sleep(1100);
+
+        //park!
         wheelController.stopWheels();
     }
 }
