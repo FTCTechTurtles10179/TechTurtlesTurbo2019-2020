@@ -20,26 +20,11 @@ public class red1 extends LinearOpMode {
         foundationGrabber = hardwareMap.servo.get("foundationGrabber");
         waitForStart();
 
-        //moves sideways to accommodate for other bot
-        wheelController.moveXY(0.5,0);
-        sleep(500);
-        wheelController.stopWheels();
-
-        //moves backwards to the foundation
+        //moves to the skybridge
         wheelController.moveXY(0,-0.5);
-        sleep(3000);
-        wheelController.stopWheels();
+        sleep(1200);
 
-        foundationGrabber.setPosition(0);
-
-        wheelController.moveXY(0,0.5);
-        sleep(300);
-        wheelController.stopWheels();
-
-        foundationGrabber.setPosition(1);
-
-        wheelController.moveXY(0,0.5);
-        sleep(900);
+        //park
         wheelController.stopWheels();
     }
 }
