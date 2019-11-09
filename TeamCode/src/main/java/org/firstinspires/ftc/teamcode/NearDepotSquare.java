@@ -25,7 +25,7 @@ public class NearDepotSquare extends LinearOpMode {
 
         //moves to the skybridge
         wheelController.moveXY(0,0.5);
-        Timeout.waitUnlessInterrupt(500, () -> (!opModeIsActive()));
+        Timeout.waitUnlessInterrupt(1400, () -> (!opModeIsActive()));
 
         //park
         wheelController.stopWheels();

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.Configurator;
@@ -18,11 +19,7 @@ public class TurtlesTeleOp extends OpMode {
     DcMotor armMotor;
     Servo claw;
     Servo foundationGrabber;
-
-    double g1OldRStickX = 0;
-    double g1OldLStickY = 0;
-    double g1OldLStickX = 0;
-    double g2OldRStickY = 0;
+    TouchSensor armToucher;
 
     @Override
     public void init() {
@@ -32,12 +29,16 @@ public class TurtlesTeleOp extends OpMode {
         claw = config.getServo("claw");
         foundationGrabber = config.getServo("foundationGrabber");
         foundationGrabber.setPosition(1);
+       // armToucher = config.getTouchSensor("armToucher");
     }
 
     @Override
     public void loop() {
-        wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x, g1OldRStickX), Smoother.smooth(gamepad1.left_stick_y, g1OldLStickY), Smoother.smooth(gamepad1.left_stick_x, g1OldLStickX));
-        armMotor.setPower(Range.clip(-gamepad2.right_stick_y + 0.05, -1, 1));
+        wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x), Smoother.smooth(gamepad1.left_stick_y), Smoother.smooth(gamepad1.left_stick_x)*0.8);
+
+        double armSpeed = gamepad2.left_stick_y;
+       // if (armToucher.isPressed()) armSpeed = Range.clip(armSpeed, 0, 1);
+        armMotor.setPower(Range.clip(-armSpeed + 0.05, -1, 1));
 
         if (gamepad1.b) wheelController.runWithoutEncoder();
         if (gamepad1.a) wheelController.runUsingEncoder();
@@ -52,9 +53,5 @@ public class TurtlesTeleOp extends OpMode {
         telemetry.addData("backLeftEncoder", wheelController.backLeft.getCurrentPosition());
         telemetry.addData("backRightEncoder", wheelController.backRight.getCurrentPosition());
         telemetry.update();
-
-        g1OldRStickX = (g1OldRStickX + gamepad1.right_stick_x)/2;
-        g1OldLStickY = (g1OldLStickY + gamepad1.left_stick_y)/2;
-        g1OldLStickX = (g1OldLStickX + gamepad1.left_stick_x)/2;
     }
 }

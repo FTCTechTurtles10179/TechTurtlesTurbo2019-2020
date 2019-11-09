@@ -18,7 +18,7 @@ public class DebugTeleOp extends OpMode {
         wheelController = new WheelController(config);
     }
 
-    @Override
+        @Override
     public void loop() {
         wheelController.moveXY(0, gamepad1.left_stick_y);
         telemetry.addData("overall encoder", (wheelController.leftEncoder() + wheelController.rightEncoder())/2);

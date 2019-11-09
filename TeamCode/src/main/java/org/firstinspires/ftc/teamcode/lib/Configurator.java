@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -34,6 +35,15 @@ public class Configurator {
         } catch (Exception e) {
             telemetry.log().add("WARNING : Could not find servo " + name + ", please add to config.");
             return hardwareMap.getAll(Servo.class).get(0);
+        }
+    }
+
+    public TouchSensor getTouchSensor(String name) {
+        try {
+            return hardwareMap.touchSensor.get(name);
+        } catch (Exception e) {
+            telemetry.log().add("WARNING : Could not find touchSensor " + name + ", please add to config.");
+            return hardwareMap.getAll(TouchSensor.class).get(0);
         }
     }
 }
