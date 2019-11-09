@@ -31,6 +31,7 @@ public class TurtlesTeleOp extends OpMode {
         armMotor = config.getDcMotor("armMotor");
         claw = config.getServo("claw");
         foundationGrabber = config.getServo("foundationGrabber");
+        foundationGrabber.setPosition(1);
     }
 
     @Override

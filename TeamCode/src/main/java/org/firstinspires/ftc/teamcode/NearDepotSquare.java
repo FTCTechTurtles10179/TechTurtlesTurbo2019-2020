@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.lib.Timeout;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 import org.firstinspires.ftc.teamcode.lib.util.BooleanCommand;
 
-@Autonomous(name="NearDepotTriangle")
-public class NearDepotTriangle extends LinearOpMode {
+@Autonomous(name="NearDepotSquare")
+public class NearDepotSquare extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
 
@@ -20,11 +20,12 @@ public class NearDepotTriangle extends LinearOpMode {
         wheelController = new WheelController(config);
         Servo foundationGrabber;
         foundationGrabber = hardwareMap.servo.get("foundationGrabber");
+        foundationGrabber.setPosition(1);
         waitForStart();
 
         //moves to the skybridge
-        wheelController.moveXY(0,-0.5);
-        Timeout.waitUnlessInterrupt(1200, () -> {return opModeIsActive();});
+        wheelController.moveXY(0,0.5);
+        Timeout.waitUnlessInterrupt(500, () -> (!opModeIsActive()));
 
         //park
         wheelController.stopWheels();
