@@ -26,14 +26,21 @@ public class red2 extends LinearOpMode {
         waitForStart();
         wheelController.runWithoutEncoder();
 
-        //moves sideways to accommodate for other bot
-        wheelController.moveXY(-0.5,0);
-        sleep(500);
+        //move to the foundation
+        wheelController.moveXY(0, -0.5);
+        sleep(800);
+
+        //stop at the foundation
         wheelController.stopWheels();
 
-        //moves forward under the skybridge
-        wheelController.moveXY(0,-0.5);
-        sleep(1250);
+        //deploy the foundation grabber
+        foundationGrabber.setPosition(1);
+
+        //move back to the loading zone
+        wheelController.moveXY(0, 0.5);
+        sleep(1100);
+
+        //park!
         wheelController.stopWheels();
     }
 }
