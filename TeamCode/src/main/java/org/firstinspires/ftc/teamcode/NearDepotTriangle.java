@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.lib.Timeout;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 import org.firstinspires.ftc.teamcode.lib.util.BooleanCommand;
 
-@Autonomous(name="NearLoadingZoneTriangle")
-public class NearLoadingZoneTriangle extends LinearOpMode {
+@Autonomous(name="NearDepotTriangle")
+public class NearDepotTriangle extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
 

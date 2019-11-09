@@ -52,7 +52,7 @@ public class TurtlesTeleOp extends OpMode {
         telemetry.addData("backRightEncoder", wheelController.backRight.getCurrentPosition());
         telemetry.update();
 
-        g1OldRStickX = (g1OldLStickX + gamepad1.right_stick_x)/2;
+        g1OldRStickX = (g1OldRStickX + gamepad1.right_stick_x)/2;
         g1OldLStickY = (g1OldLStickY + gamepad1.left_stick_y)/2;
         g1OldLStickX = (g1OldLStickX + gamepad1.left_stick_x)/2;
     }

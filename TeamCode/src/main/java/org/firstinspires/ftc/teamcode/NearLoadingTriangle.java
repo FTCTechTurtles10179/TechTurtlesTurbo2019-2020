@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.lib.WheelController;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name="NearDepotSquare")
-public class NearDepotSquare extends LinearOpMode {
+@Autonomous(name="NearLoadingTriangle")
+public class NearLoadingTriangle extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
 
