@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -8,7 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.lib.PreInitGUI;
 import org.firstinspires.ftc.teamcode.lib.util.StringCommand;
 
-//@TeleOp(name="Pushbot", group="default")
+@TeleOp(name="Pushbot", group="default")
 
 public class GoodPushbot extends OpMode {
     DcMotor left;
