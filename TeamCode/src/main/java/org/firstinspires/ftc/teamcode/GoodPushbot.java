@@ -69,11 +69,11 @@ public class GoodPushbot extends OpMode {
 
         if (gamepad1.a) {
             lclaw.setPosition(0);
-            rclaw.setPosition(0);
+            rclaw.setPosition(1);
         }
         if (gamepad1.b) {
             lclaw.setPosition(1);
-            rclaw.setPosition(1);
+            rclaw.setPosition(0);
         }
     }
 }
