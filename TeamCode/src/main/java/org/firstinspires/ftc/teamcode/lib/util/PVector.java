@@ -299,9 +299,9 @@ public class PVector implements Serializable {
      */
     static public PVector fromAngle(double angle, PVector target) {
         if (target == null) {
-            target = new PVector((double)Math.cos(angle),(double)Math.sin(angle),0);
+            target = new PVector(Math.cos(angle),Math.sin(angle),0);
         } else {
-            target.set((double)Math.cos(angle),(double)Math.sin(angle),0);
+            target.set(Math.cos(angle),Math.sin(angle),0);
         }
         return target;
     }
@@ -362,7 +362,7 @@ public class PVector implements Serializable {
      * @see PVector#magSq()
      */
     public double mag() {
-        return (double) Math.sqrt(x*x + y*y + z*z);
+        return  Math.sqrt(x*x + y*y + z*z);
     }
 
 
@@ -505,7 +505,7 @@ public class PVector implements Serializable {
 
     /**
      * Subtract one vector from another
-     * @param v1 the x, y, and z components of a PVector object
+     * @param v1 the x, y, and z compoznents of a PVector object
      * @param v2 the x, y, and z components of a PVector object
      */
     static public PVector sub(PVector v1, PVector v2) {
@@ -630,7 +630,7 @@ public class PVector implements Serializable {
         double dx = x - v.x;
         double dy = y - v.y;
         double dz = z - v.z;
-        return (double) Math.sqrt(dx*dx + dy*dy + dz*dz);
+        return  Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
 
 
@@ -643,7 +643,7 @@ public class PVector implements Serializable {
         double dx = v1.x - v2.x;
         double dy = v1.y - v2.y;
         double dz = v1.z - v2.z;
-        return (double) Math.sqrt(dx*dx + dy*dy + dz*dz);
+        return  Math.sqrt((dx*dx) + (dy*dy) + (dz*dz));
     }
 
 
@@ -842,7 +842,7 @@ public class PVector implements Serializable {
      * @brief Calculate the angle of rotation for this vector
      */
     public double heading() {
-        double angle = (double) Math.atan2(y, x);
+        double angle =  Math.atan2(y, x);
         return angle;
     }
 
