@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.lib.Configurator;
 import org.firstinspires.ftc.teamcode.lib.Timeout;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
 
-@Autonomous(name="NearLoadingTriangleBlue")
-public class NearLoadingTriangleBlue extends LinearOpMode {
+@Autonomous(name="NearLoadingTriangleRedStrafeless")
+public class NearLoadingTriangleRedStrafeless extends LinearOpMode {
     Configurator config;
     WheelController wheelController;
 
@@ -17,6 +17,8 @@ public class NearLoadingTriangleBlue extends LinearOpMode {
         config = new Configurator(this);
         wheelController = new WheelController(config);
         Servo foundationGrabber;
+
+
         foundationGrabber = hardwareMap.servo.get("foundationGrabber");
         foundationGrabber.setPosition(1);
 
@@ -24,7 +26,7 @@ public class NearLoadingTriangleBlue extends LinearOpMode {
         wheelController.runWithoutEncoder();
 
         //move to the foundation
-        wheelController.moveXY(0.25, -0.25);
+        wheelController.moveXY(-0.25, -0.25);
         Timeout.waitUnlessInterrupt(3500, () -> (!opModeIsActive()));
 
         //stop at the foundation
@@ -39,21 +41,14 @@ public class NearLoadingTriangleBlue extends LinearOpMode {
         Timeout.waitUnlessInterrupt(4000, () -> (!opModeIsActive()));
 
         //turn to nudge the foundation into the triangle
-        wheelController.moveTurn(-0.5);
+        wheelController.moveTurn(0.5);
         Timeout.waitUnlessInterrupt(600, () -> (!opModeIsActive()));
 
-        //stop turning
+        //park
         wheelController.stopWheels();
 
         //retract the foundation grabber
         foundationGrabber.setPosition(1);
         Timeout.waitUnlessInterrupt(800, () -> (!opModeIsActive()));
-
-        //strafe into the line for a park
-        wheelController.moveXY(-1, 0);
-        Timeout.waitUnlessInterrupt(1200, () -> (!opModeIsActive()));
-
-        //park
-        wheelController.stopWheels();
     }
 }

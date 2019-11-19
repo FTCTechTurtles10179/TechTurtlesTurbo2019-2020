@@ -20,6 +20,8 @@ public class TurtlesTeleOp extends OpMode {
     Servo claw;
     Servo foundationGrabber;
     TouchSensor armToucher;
+    int slowMode = 1;
+    boolean slowModeJustSwapped = false;
 
     @Override
     public void init() {
@@ -34,7 +36,12 @@ public class TurtlesTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x), Smoother.smooth(gamepad1.left_stick_y), Smoother.smooth(gamepad1.left_stick_x)*0.8);
+        if ((gamepad1.right_bumper || gamepad1.left_bumper) && !slowModeJustSwapped) {
+            slowMode = (slowMode == 1) ? 2 : 1;
+        }
+        slowModeJustSwapped = (gamepad1.right_bumper || gamepad1.left_bumper);
+
+        wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x/slowMode), Smoother.smooth(gamepad1.left_stick_y/slowMode), Smoother.smooth(gamepad1.left_stick_x/slowMode)*0.8);
 
         double armSpeed = gamepad2.left_stick_y;
        // if (armToucher.isPressed()) armSpeed = Range.clip(armSpeed, 0, 1);
