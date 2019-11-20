@@ -4,14 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.lib.Configurator;
 import org.firstinspires.ftc.teamcode.lib.Timeout;
 import org.firstinspires.ftc.teamcode.lib.WheelController;
+import org.firstinspires.ftc.teamcode.ConceptVuforiaNavigation;
 
 @Autonomous(name="NearLoadingTriangleBlue")
-public class NearLoadingTriangleBlue extends LinearOpMode {
+public class NearLoadingTriangleBlue extends LinearOpMode{
     Configurator config;
     WheelController wheelController;
+    VuforiaLocalizer vuforiaLocalizer;
 
     public void runOpMode(){
         config = new Configurator(this);
