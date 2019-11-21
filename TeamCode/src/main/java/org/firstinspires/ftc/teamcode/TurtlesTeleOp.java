@@ -43,9 +43,10 @@ public class TurtlesTeleOp extends OpMode {
 
         wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x/slowMode), Smoother.smooth(gamepad1.left_stick_y/slowMode), Smoother.smooth(gamepad1.left_stick_x/slowMode)*0.8);
 
-        double armSpeed = gamepad2.left_stick_y;
+        double armSpeed = -gamepad2.left_stick_y;
         if (armToucher.isPressed()) armSpeed = Range.clip(armSpeed, 0, 1);
-        armMotor.setPower(Range.clip(-armSpeed + 0.05, -1, 1));
+        armMotor.setPower(Range.clip(armSpeed + 0.05, -1, 1));
+        telemetry.addData("armToucher isPressed", armToucher.isPressed());
 
         if (gamepad1.b) wheelController.runWithoutEncoder();
         if (gamepad1.a) wheelController.runUsingEncoder();
