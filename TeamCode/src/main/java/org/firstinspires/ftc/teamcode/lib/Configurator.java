@@ -49,7 +49,6 @@ public class Configurator {
 
     public TouchSensor getTouchSensor(String name) {
         try {
-            opMode.hardwareMap.digitalChannel.get(name).setMode(DigitalChannel.Mode.INPUT);
             return opMode.hardwareMap.touchSensor.get(name);
         } catch (Exception e) {
             opMode.telemetry.log().add("WARNING : Could not find touchSensor " + name + ", please add to config.");
