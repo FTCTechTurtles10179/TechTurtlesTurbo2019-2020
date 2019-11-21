@@ -4,6 +4,7 @@ import com.qualcomm.hardware.HardwareFactory;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -48,6 +49,7 @@ public class Configurator {
 
     public TouchSensor getTouchSensor(String name) {
         try {
+            opMode.hardwareMap.digitalChannel.get(name).setMode(DigitalChannel.Mode.INPUT);
             return opMode.hardwareMap.touchSensor.get(name);
         } catch (Exception e) {
             opMode.telemetry.log().add("WARNING : Could not find touchSensor " + name + ", please add to config.");
