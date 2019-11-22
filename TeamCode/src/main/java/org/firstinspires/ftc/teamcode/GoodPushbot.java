@@ -34,7 +34,7 @@ public class GoodPushbot extends OpMode {
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         left.setDirection(DcMotor.Direction.REVERSE);
 
-        gui = new PreInitGUI(new String[]{"armMin", "armMax"}, new StringCommand[]{() -> {return "Arm position: " + arm.getCurrentPosition();}}, this);
+        gui = new PreInitGUI(new String[]{"armMin", "armMax"}, new StringCommand[]{() -> ("Arm position: " + arm.getCurrentPosition())}, this);
     }
 
     @Override
