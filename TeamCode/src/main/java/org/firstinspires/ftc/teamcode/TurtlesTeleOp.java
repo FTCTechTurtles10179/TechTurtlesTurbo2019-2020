@@ -49,7 +49,7 @@ public class TurtlesTeleOp extends OpMode {
         double armSpeed = -gamepad2.left_stick_y;
         if (armMotor.getCurrentPosition() >= 0) armSpeed = Range.clip(armSpeed, 0, 1);
         armMotor.setPower(Range.clip(armSpeed + 0.05, -1, 1));
-        telemetry.addData("armToucher isPressed", armToucher.isPressed());
+        telemetry.addData("armMotor", armMotor.getCurrentPosition());
 
         if (gamepad1.b) wheelController.runWithoutEncoder();
         if (gamepad1.a) wheelController.runUsingEncoder();
@@ -63,7 +63,6 @@ public class TurtlesTeleOp extends OpMode {
         telemetry.addData("frontRightEncoder", wheelController.frontRight.getCurrentPosition());
         telemetry.addData("backLeftEncoder", wheelController.backLeft.getCurrentPosition());
         telemetry.addData("backRightEncoder", wheelController.backRight.getCurrentPosition());
-        telemetry.addData("armMotor", armMotor.getCurrentPosition());
         telemetry.update();
     }
 }
