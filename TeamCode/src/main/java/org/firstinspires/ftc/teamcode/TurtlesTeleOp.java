@@ -63,6 +63,7 @@ public class TurtlesTeleOp extends OpMode {
         telemetry.addData("frontRightEncoder", wheelController.frontRight.getCurrentPosition());
         telemetry.addData("backLeftEncoder", wheelController.backLeft.getCurrentPosition());
         telemetry.addData("backRightEncoder", wheelController.backRight.getCurrentPosition());
+        telemetry.addData("armMotor", armMotor.getCurrentPosition());
         telemetry.update();
     }
 }
