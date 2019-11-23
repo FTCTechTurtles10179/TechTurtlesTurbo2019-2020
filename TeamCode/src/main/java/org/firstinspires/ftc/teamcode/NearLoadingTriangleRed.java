@@ -58,7 +58,7 @@ public class NearLoadingTriangleRed extends LinearOpMode {
         Timeout.waitUnlessInterrupt(1000, () -> (!opModeIsActive()));
 
         //strafe into the line for a park
-        wheelController.moveXY(1, 0);
+        wheelController.moveXY(1, -0.2);
         Timeout.waitUnlessInterrupt(1000, () -> (!opModeIsActive()));
 
         //park
