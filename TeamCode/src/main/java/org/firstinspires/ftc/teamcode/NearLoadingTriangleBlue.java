@@ -39,11 +39,7 @@ public class NearLoadingTriangleBlue extends LinearOpMode{
 
         //move back to the loading zone
         wheelController.moveXY(0, 0.6);
-        Timeout.waitUnlessInterrupt(4000, () -> (!opModeIsActive()));
-
-        //turn to nudge the foundation into the triangle
-        wheelController.moveTurn(-0.5);
-        Timeout.waitUnlessInterrupt(600, () -> (!opModeIsActive()));
+        Timeout.waitUnlessInterrupt(4300, () -> (!opModeIsActive()));
 
         //stop turning
         wheelController.stopWheels();
