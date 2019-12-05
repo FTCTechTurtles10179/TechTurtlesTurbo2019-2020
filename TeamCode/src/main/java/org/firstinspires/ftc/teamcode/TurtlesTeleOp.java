@@ -23,7 +23,7 @@ public class TurtlesTeleOp extends OpMode {
     TouchSensor armToucher;
     double slowMode = 1;
     boolean slowModeJustSwapped = false;
-    boolean armLimit = false;
+    boolean armLimit = true;
 
     @Override
     public void init() {
@@ -54,8 +54,8 @@ public class TurtlesTeleOp extends OpMode {
 
         if (gamepad1.b) wheelController.runWithoutEncoder();
         if (gamepad1.a) wheelController.runUsingEncoder();
-        if (gamepad1.left_bumper) armLimit = false;
-        if (gamepad1.right_bumper) armLimit = true;
+        if (gamepad2.left_bumper) armLimit = false;
+        if (gamepad2.right_bumper) armLimit = true;
 
         if (gamepad2.a) claw.setPosition(0);
         if (gamepad2.b) claw.setPosition(1);
