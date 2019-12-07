@@ -1,33 +1,26 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.lib.AutoController;
-import org.firstinspires.ftc.teamcode.lib.Configurator;
-import org.firstinspires.ftc.teamcode.lib.Timeout;
-import org.firstinspires.ftc.teamcode.lib.WheelController;
-import org.firstinspires.ftc.teamcode.lib.util.BooleanCommand;
+import org.firstinspires.ftc.teamcode.lib.AutonomousLibrary;
+import org.firstinspires.ftc.teamcode.lib.util.State;
 
 @Autonomous(name="NearDepotSquare")
-public class NearDepotSquare extends LinearOpMode {
-    Configurator config;
-    WheelController wheelController;
+public class NearDepotSquare extends AutonomousLibrary {
+    Servo foundationGrabber;
 
-    public void runOpMode(){
-        config = new Configurator(this);
-        wheelController = new WheelController(config);
-        Servo foundationGrabber;
-        foundationGrabber = hardwareMap.servo.get("foundationGrabber");
+    public void setupOpMode(){
+        foundationGrabber = getServo("foundationGrabber"); //Get the foundation grabber servo
         foundationGrabber.setPosition(1);
-        waitForStart();
+        stateMachine.debugMode = true; //Give telemetry of the running states
 
-        //moves to the skybridge
-        wheelController.moveXY(0,0.5);
-        Timeout.waitUnlessInterrupt(1150, () -> (!opModeIsActive()));
+        State moveToSkybridge = new State(() -> { //Make a new state, and while it's running
+            //move to the skybridge
+            moveRightCentimeters(-70, -0.5);
+            return false;
+        }, () -> {}, 0, "moveToSkybridge"); //Run once (0 milliseconds) and name it moveToSkybridge
 
-        //park
-        wheelController.stopWheels();
+        stateMachine.addState(moveToSkybridge);
     }
 }
