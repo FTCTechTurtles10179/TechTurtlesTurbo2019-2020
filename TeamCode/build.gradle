@@ -13,21 +13,6 @@ ext {
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
-dependencies {
-    /*
-     * Other Modules
-     */
-    implementation project(':FtcRobotController')
-
-    turboImplementation project(':Hardware')
-    turboImplementation project(':RobotCore')
-    turboImplementation project(':FtcCommon')
-
-    extremeTurboImplementation project(':Hardware')
-    extremeTurboImplementation project(':RobotCore')
-    extremeTurboImplementation project(':FtcCommon')
-}
-// Custom definitions may go here
 repositories {
     mavenCentral()
 }

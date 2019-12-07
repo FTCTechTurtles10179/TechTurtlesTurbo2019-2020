@@ -8,7 +8,6 @@
 /captures
 .externalNativeBuild
 
-*ASUS_PC_01*
-
-// Ignore files in Teamcode subfolders.
-/Teamcode/**/*.jpg
+/TeamCode/TestData/**/*.xlsx
+/TeamCode/TestData/**/*.csv
+/TeamCode/TestData/openCV_output/*
