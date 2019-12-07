@@ -1,31 +1,31 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-import com.qualcomm.hardware.HardwareFactory;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.Hardware;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Disabled
-public class Configurator {
-    OpMode opMode;
+public class Configurator extends OpMode{
+    public DcMotor frontLeft;
+    public DcMotor frontRight;
+    public DcMotor backLeft;
+    public DcMotor backRight;
 
-    public Configurator(OpMode opMode) {
-        this.opMode = opMode;
-    }
+    private int oldFrontLeftEncoder = 0;
+    private int oldFrontRightEncoder = 0;
+    private int oldBackLeftEncoder = 0;
+    private int oldBackRightEncoder = 0;
+
+    public StateMachine stateMachine;
+    public WheelController wheelController;
 
     public DcMotor getDcMotor(String name) {
         try {
-            return opMode.hardwareMap.dcMotor.get(name);
+            return hardwareMap.dcMotor.get(name);
         } catch (Exception e) {
-            opMode.telemetry.log().add("WARNING : Could not find motor " + name + ", please add to config.");
+            telemetry.log().add("WARNING : Could not find motor " + name + ", please add to config.");
             try {
                 return DcMotor.class.newInstance();
             } catch (Exception ex) {
@@ -36,9 +36,9 @@ public class Configurator {
 
     public Servo getServo(String name) {
         try {
-            return opMode.hardwareMap.servo.get(name);
+            return hardwareMap.servo.get(name);
         } catch (Exception e) {
-            opMode.telemetry.log().add("WARNING : Could not find servo " + name + ", please add to config.");
+            telemetry.log().add("WARNING : Could not find servo " + name + ", please add to config.");
             try {
                 return Servo.class.newInstance();
             } catch (Exception ex) {
@@ -49,14 +49,54 @@ public class Configurator {
 
     public TouchSensor getTouchSensor(String name) {
         try {
-            return opMode.hardwareMap.touchSensor.get(name);
+            return hardwareMap.touchSensor.get(name);
         } catch (Exception e) {
-            opMode.telemetry.log().add("WARNING : Could not find touchSensor " + name + ", please add to config.");
+            telemetry.log().add("WARNING : Could not find touchSensor " + name + ", please add to config.");
             try {
                 return TouchSensor.class.newInstance();
             } catch (Exception ex) {
                 return null;
             }
+        }
+    }
+
+    @Override
+    public void init() {
+        frontLeft = getDcMotor("frontLeft");
+        frontRight = getDcMotor("frontRight");
+        backLeft = getDcMotor("backLeft");
+        backRight = getDcMotor("backRight");
+
+        stateMachine = new StateMachine(this);
+        wheelController = new WheelController(this);
+
+        setupOpMode();
+    }
+
+    public void setupOpMode() {}
+
+    @Override
+    public void loop() {
+        detectMotorFault();
+        stateMachine.runStates();
+    }
+
+
+    public void detectMotorFault() {
+        //Check if the front left motor is powered but the encoder is not moving
+        if (frontLeft.getPower() != 0 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {
+            //If so, there is an encoder issue so we disable encoders
+            frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        //Do the same for the other motors
+        if (frontRight.getPower() != 0 && oldFrontRightEncoder == frontRight.getCurrentPosition()) {
+            frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        if (backLeft.getPower() != 0 && oldBackLeftEncoder == backLeft.getCurrentPosition()) {
+            backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        if (backRight.getPower() != 0 && oldBackRightEncoder == backRight.getCurrentPosition()) {
+            backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 }

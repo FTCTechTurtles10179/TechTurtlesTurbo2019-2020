@@ -163,7 +163,7 @@ public class InspectionState
             }
             else
             {
-            this.wifiConnected = WifiDirectAgent.getInstance().isWifiConnected();
+            this.wifiConnected = true;
             this.wifiDirectEnabled = WifiDirectAgent.getInstance().isWifiDirectEnabled();
             this.wifiDirectConnected = WifiDirectAgent.getInstance().isWifiDirectConnected();
             }

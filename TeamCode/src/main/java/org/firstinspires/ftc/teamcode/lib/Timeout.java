@@ -6,7 +6,7 @@ import static java.lang.System.currentTimeMillis;
 
 public class Timeout {
     /**
-     * rung stopIf.execute() to pause until millis has ellapsed, or stop if
+     * run stopIf.execute() to pause until millis has ellapsed, or stop if
      * @param millis
      * @param stopIf
      */

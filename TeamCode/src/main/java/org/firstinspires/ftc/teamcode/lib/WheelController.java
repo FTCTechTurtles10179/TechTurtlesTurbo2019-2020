@@ -93,13 +93,12 @@ public class WheelController {
     }
 
     public WheelController(Configurator config) {
-        // When the wheel controller is instantiated, it gets the motors and sets them up
-        frontLeft = config.getDcMotor("frontLeft");
-        frontRight = config.getDcMotor("frontRight");
-        backLeft = config.getDcMotor("backLeft");
-        backRight = config.getDcMotor("backRight");
-
         runUsingEncoder();
+
+        frontLeft = config.frontLeft;
+        frontRight = config.frontRight;
+        backLeft = config.backLeft;
+        backRight = config.backRight;
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
