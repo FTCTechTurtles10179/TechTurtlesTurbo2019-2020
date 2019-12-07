@@ -15,12 +15,10 @@ public class NearDepotSquare extends AutonomousLibrary {
         foundationGrabber.setPosition(1);
         stateMachine.debugMode = true; //Give telemetry of the running states
 
-        State moveToSkybridge = new State(() -> { //Make a new state, and while it's running
+        stateMachine.addState(new State(() -> { //Make a new state, and while it's running
             //move to the skybridge
-            moveRightCentimeters(-70, -0.5);
-            return false;
-        }, () -> {}, 0, "moveToSkybridge"); //Run once (0 milliseconds) and name it moveToSkybridge
-
-        stateMachine.addState(moveToSkybridge);
+            moveRightCentimeters(-70, -1);
+            return true; //Only run once, return true to remove the state from the statemachine.
+        }, () -> {}, "moveToSkybridge")); //Name it moveToSkybridge
     }
 }
