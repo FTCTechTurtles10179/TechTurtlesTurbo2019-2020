@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.lib.util;
 
-import org.firstinspires.ftc.teamcode.lib.util.BooleanCommand;
-import org.firstinspires.ftc.teamcode.lib.util.Command;
-
 import static java.lang.System.currentTimeMillis;
 
 public class State {
@@ -11,8 +8,8 @@ public class State {
     private boolean isTimer = false; //If it uses a timer or runs indefinitely
     private boolean firstRun = true; //Is it the first time the state was run?
     private long timeStarted = -1; //When the state is first run
-    private long millisToRun; //If the state only needs to run for x amount of milliseconds
-    private String stateName = "state"; //Cosmetic
+    private long millisToRun = 0; //If the state only needs to run for x amount of milliseconds
+    private String stateName = "Unnamed"; //Cosmetic
 
     public State(BooleanCommand program, Command programOnStop) { //Most basic state, just a command to run indefinitely
         this.program = program;
@@ -24,7 +21,6 @@ public class State {
         this.programOnStop = programOnStop;
         this.millisToRun = millisToRun;
         isTimer = true;
-        timeStarted = currentTimeMillis();
     }
 
     public State(BooleanCommand program, Command programOnStop, String stateName) { //Named version of above
@@ -39,20 +35,19 @@ public class State {
         this.stateName = stateName;
         this.millisToRun = millisToRun;
         isTimer = true;
-        timeStarted = currentTimeMillis();
     }
 
-    public String getStateName() {
+    public String getStateName() { //Prevent state name modification
         return stateName;
     }
 
     public boolean execute() {
-        if (firstRun && isTimer) {
+        if (firstRun && isTimer) { //If this is a timer and it's the first time running,
             firstRun = false;
-            timeStarted = currentTimeMillis();
+            timeStarted = currentTimeMillis(); //Then the current time is when it started
         }
-        boolean stop = (currentTimeMillis() >= timeStarted + millisToRun && timeStarted != -1) || program.execute(); //True if the state wants to be deactivated or time ran out
-        if (stop) programOnStop.execute();
+        boolean stop = (!firstRun && currentTimeMillis() >= timeStarted + millisToRun) || program.execute(); //True if the state wants to be deactivated or time ran out
+        if (stop) programOnStop.execute(); //Run what's on stop if we are stopping
         return stop;
     }
 }

@@ -13,7 +13,7 @@ public class NearDepotSquare extends AutonomousLibrary {
     public void setupOpMode(){
         foundationGrabber = getServo("foundationGrabber"); //Get the foundation grabber servo
         foundationGrabber.setPosition(1);
-        stateMachine.debugMode = true; //Give telemetry of the running states
+        debugMode = true; //Give telemetry of the running states, encoders, autonomous library, etc.
 
         stateMachine.addState(new State(() -> { //Make a new state, and while it's running
             //move to the skybridge
