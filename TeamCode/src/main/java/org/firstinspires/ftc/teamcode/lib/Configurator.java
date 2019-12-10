@@ -13,10 +13,10 @@ public class Configurator extends OpMode{
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    private int oldFrontLeftEncoder = 0;
-    private int oldFrontRightEncoder = 0;
-    private int oldBackLeftEncoder = 0;
-    private int oldBackRightEncoder = 0;
+    private int oldFrontLeftEncoder = 999999;
+    private int oldFrontRightEncoder = 999999;
+    private int oldBackLeftEncoder = 999999;
+    private int oldBackRightEncoder = 999999;
 
     public StateMachine stateMachine;
     public WheelController wheelController;
@@ -25,7 +25,7 @@ public class Configurator extends OpMode{
         try {
             return hardwareMap.dcMotor.get(name);
         } catch (Exception e) {
-            telemetry.log().add("WARNING : Could not find motor " + name + ", please add to config.");
+            telemetry.addLine("WARNING : Could not find motor " + name + ", please add to config.");
             try {
                 return DcMotor.class.newInstance();
             } catch (Exception ex) {
@@ -38,7 +38,7 @@ public class Configurator extends OpMode{
         try {
             return hardwareMap.servo.get(name);
         } catch (Exception e) {
-            telemetry.log().add("WARNING : Could not find servo " + name + ", please add to config.");
+            telemetry.addLine("WARNING : Could not find servo " + name + ", please add to config.");
             try {
                 return Servo.class.newInstance();
             } catch (Exception ex) {
@@ -51,7 +51,7 @@ public class Configurator extends OpMode{
         try {
             return hardwareMap.touchSensor.get(name);
         } catch (Exception e) {
-            telemetry.log().add("WARNING : Could not find touchSensor " + name + ", please add to config.");
+            telemetry.addLine("WARNING : Could not find touchSensor " + name + ", please add to config.");
             try {
                 return TouchSensor.class.newInstance();
             } catch (Exception ex) {

@@ -93,12 +93,12 @@ public class WheelController {
     }
 
     public WheelController(Configurator config) {
-        runUsingEncoder();
-
         frontLeft = config.frontLeft;
         frontRight = config.frontRight;
         backLeft = config.backLeft;
         backRight = config.backRight;
+
+        runUsingEncoder();
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);

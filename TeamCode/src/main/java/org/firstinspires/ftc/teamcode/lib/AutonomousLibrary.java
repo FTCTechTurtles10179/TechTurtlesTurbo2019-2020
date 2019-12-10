@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.lib.util.State;
 
 public class AutonomousLibrary extends Configurator {
     double cmToClickForward = 16.5;
-    double cmToClickRight = 16.5;
+    double cmToClickRight = 24.3;
 
     public void moveForwardCentimeters(double distance, double speed) {
         double startingEncoder = wheelController.avgEncoder();
@@ -15,11 +15,13 @@ public class AutonomousLibrary extends Configurator {
                 wheelController.moveXY(0, speed/3);
             }
             return !(Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) <= 0.1 * cmToClickForward);
-        }, () -> {}, "autoLibMoveForwardCm"));
+        }, () -> {
+            wheelController.stopWheels();
+        }, "autoLibMoveForwardCm"));
     }
 
-    public void strafeRightCentimeters(double distance, double speed) {
-        double startingEncoder = wheelController.avgEncoder();
+    public void moveRightCentimeters(double distance, double speed) {
+        double startingEncoder = wheelController.rightEncoder();
         stateMachine.addState(new State(() -> {
             if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= 5 * cmToClickRight) {
                 wheelController.moveXY(speed, 0);
@@ -27,6 +29,8 @@ public class AutonomousLibrary extends Configurator {
                 wheelController.moveXY(speed/3, 0);
             }
             return !(Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) <= 0.1 * cmToClickRight);
-        }, () -> {}, "autoLibMoveRightCm"));
+        }, () -> {
+            wheelController.stopWheels();
+        }, "autoLibMoveRightCm"));
     }
 }

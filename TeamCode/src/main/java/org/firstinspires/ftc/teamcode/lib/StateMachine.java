@@ -19,9 +19,9 @@ public class StateMachine {
     }
 
     public void runStates() {
-        for (State state: states) {
-            if (debugMode) config.telemetry.addLine("State: " + state.getStateName());
-            if (!state.execute()) states.remove(state);
+        for (int i = 0; i < states.size(); i++) {
+            if (debugMode) config.telemetry.addLine("State: " + states.get(i).getStateName());
+            if (states.get(i).execute()) states.remove(i);
         }
     }
 }
