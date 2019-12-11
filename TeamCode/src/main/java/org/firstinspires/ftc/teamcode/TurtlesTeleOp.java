@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.Configurator;
-import org.firstinspires.ftc.teamcode.lib.Smoother;
-import org.firstinspires.ftc.teamcode.lib.WheelController;
 import org.firstinspires.ftc.teamcode.lib.util.State;
 
 @TeleOp(name="TeleOp", group="default")
@@ -40,7 +36,7 @@ public class TurtlesTeleOp extends Configurator {
             }
             slowModeJustSwapped = (gamepad1.right_bumper || gamepad1.left_bumper);
 
-            wheelController.moveXYTurn(Smoother.smooth(gamepad1.right_stick_x / slowMode), Smoother.smooth(gamepad1.left_stick_y / slowMode), Smoother.smooth(gamepad1.left_stick_x / slowMode) * 0.8);
+            wheelController.moveXYTurn(NearDepotSquare.Smoother.smooth(gamepad1.right_stick_x / slowMode), NearDepotSquare.Smoother.smooth(gamepad1.left_stick_y / slowMode), NearDepotSquare.Smoother.smooth(gamepad1.left_stick_x / slowMode) * 0.8);
 
             double armSpeed = -gamepad2.left_stick_y;
             if (armMotor.getCurrentPosition() <= 0 && armLimit)

@@ -1,5 +1,6 @@
 import static com.google.common.truth.Truth.assertThat;
 
+import org.firstinspires.ftc.teamcode.lib.TestPipeline;
 import org.junit.Before;
 import org.junit.Test;
 import org.opencv.core.Core;
@@ -123,5 +124,13 @@ public class VisionTest {
         // Now that the proportions are the same, perform the scaling and return:
         Imgproc.resize(croppedInput, croppedInput, new Size(fx,fy),0,0, Imgproc.INTER_AREA);
         return croppedInput;
+    }
+
+    @Test
+    public void TestPipeline(){
+        OpenCvPipeline pipeline = new TestPipeline();
+        Mat output = new Mat();
+        output = pipeline.processFrame(input);
+        Imgcodecs.imwrite(IMAGE_WRITE_PATH + "pipline.jpg", output);
     }
 }

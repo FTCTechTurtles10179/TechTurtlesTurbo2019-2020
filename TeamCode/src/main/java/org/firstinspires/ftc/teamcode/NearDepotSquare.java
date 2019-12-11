@@ -21,4 +21,10 @@ public class NearDepotSquare extends AutonomousLibrary {
             return true; //Only run once, return true to remove the state from the statemachine.
         }, () -> {}, "moveToSkybridge")); //Name it moveToSkybridge
     }
+
+    public static class Smoother {
+        public static double smooth(double input){
+            return input * input * input * input * input * input * input;
+        }
+    }
 }
