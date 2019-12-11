@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.Configurator;
+import org.firstinspires.ftc.teamcode.lib.util.State;
 
 public class WheelController {
 
@@ -97,6 +98,16 @@ public class WheelController {
         frontRight = config.frontRight;
         backLeft = config.backLeft;
         backRight = config.backRight;
+
+        if (config.debugMode) {
+            config.stateMachine.addState(new State(() -> {
+                config.telemetry.addData("frontLeftEncoder", frontLeft.getCurrentPosition());
+                config.telemetry.addData("frontRightEncoder", frontRight.getCurrentPosition());
+                config.telemetry.addData("backLeftEncoder", backLeft.getCurrentPosition());
+                config.telemetry.addData("backRightEncoder", backRight.getCurrentPosition());
+                return true;
+            }, () -> {}, "Hidden"));
+        }
 
         runUsingEncoder();
 

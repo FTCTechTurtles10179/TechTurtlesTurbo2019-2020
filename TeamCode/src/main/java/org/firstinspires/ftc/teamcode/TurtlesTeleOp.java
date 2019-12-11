@@ -54,10 +54,7 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.x) foundationGrabber.setPosition(1);
             if (gamepad2.y) foundationGrabber.setPosition(0);
 
-            telemetry.addData("frontLeftEncoder", wheelController.frontLeft.getCurrentPosition());
-            telemetry.addData("frontRightEncoder", wheelController.frontRight.getCurrentPosition());
-            telemetry.addData("backLeftEncoder", wheelController.backLeft.getCurrentPosition());
-            telemetry.addData("backRightEncoder", wheelController.backRight.getCurrentPosition());
+
             telemetry.update();
 
             return false;
