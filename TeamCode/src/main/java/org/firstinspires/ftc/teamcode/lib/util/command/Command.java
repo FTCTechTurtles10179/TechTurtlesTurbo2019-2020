@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.lib.util;
+package org.firstinspires.ftc.teamcode.lib.util.command;
 
 public interface Command {
     public void execute();

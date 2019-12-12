@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.lib.util.StringCommand;
+import org.firstinspires.ftc.teamcode.lib.util.command.StringCommand;
 
 public class PreInitGUI { //TODO: Update with new libraries
     String[] varNames;

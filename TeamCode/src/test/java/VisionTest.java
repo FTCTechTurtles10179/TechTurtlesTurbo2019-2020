@@ -1,6 +1,6 @@
 import static com.google.common.truth.Truth.assertThat;
 
-import org.firstinspires.ftc.teamcode.lib.TestPipeline;
+import org.firstinspires.ftc.teamcode.lib.util.pipelines.TestPipeline;
 import org.junit.Before;
 import org.junit.Test;
 import org.opencv.core.Core;

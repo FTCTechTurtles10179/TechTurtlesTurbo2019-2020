@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.PreInitGUI;
-import org.firstinspires.ftc.teamcode.lib.util.StringCommand;
+import org.firstinspires.ftc.teamcode.lib.util.command.StringCommand;
 
 @TeleOp(name="Pushbot", group="default")
 

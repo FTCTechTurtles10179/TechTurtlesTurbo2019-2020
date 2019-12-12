@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-import org.firstinspires.ftc.teamcode.lib.util.BooleanCommand;
+import org.firstinspires.ftc.teamcode.lib.util.command.BooleanCommand;
 
 import static java.lang.System.currentTimeMillis;
 

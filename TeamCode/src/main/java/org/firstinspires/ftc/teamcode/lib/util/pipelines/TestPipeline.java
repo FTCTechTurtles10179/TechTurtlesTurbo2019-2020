@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.lib;
+package org.firstinspires.ftc.teamcode.lib.util.pipelines;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
