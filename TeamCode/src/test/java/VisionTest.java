@@ -1,5 +1,6 @@
 import static com.google.common.truth.Truth.assertThat;
 
+import org.firstinspires.ftc.teamcode.lib.util.pipelines.SkystoneFinder;
 import org.firstinspires.ftc.teamcode.lib.util.pipelines.TestPipeline;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,15 @@ public class VisionTest {
         Imgcodecs.imwrite(writePath, input);
         File outputFile = new File(writePath);
         assertThat(outputFile.exists()).isTrue();
+    }
+
+    @Test
+    public void pipelineTest() {
+        SkystoneFinder finder = new SkystoneFinder();
+        Mat output = finder.processFrame(input);
+        System.out.println(finder.listOfThings);
+        String writePath = IMAGE_WRITE_PATH + "skystoneDetectorOutput.jpg";
+        Imgcodecs.imwrite(writePath, output);
     }
 
     @Test
