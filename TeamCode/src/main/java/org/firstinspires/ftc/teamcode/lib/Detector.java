@@ -24,6 +24,4 @@ public class Detector {
         pipeline = new SkystoneFinder();
         webcam.setPipeline(pipeline);
     }
-
-    public void get
 }

@@ -70,7 +70,6 @@ public class VisionTest {
     public void pipelineTest() {
         SkystoneFinder finder = new SkystoneFinder();
         Mat output = finder.processFrame(input);
-        System.out.println(finder.listOfThings);
         String writePath = IMAGE_WRITE_PATH + "skystoneDetectorOutput.jpg";
         Imgcodecs.imwrite(writePath, output);
     }
