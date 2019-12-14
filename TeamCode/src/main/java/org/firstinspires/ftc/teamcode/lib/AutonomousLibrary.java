@@ -14,8 +14,8 @@ public abstract class AutonomousLibrary extends Configurator {
     public void moveForwardCentimeters(double distance, double speed) {
         double startingEncoder = wheelController.avgEncoder();
         if (!busyMoving) {
+            busyMoving = true;
             stateMachine.addState(new State(() -> {
-                busyMoving = true;
                 double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
                 if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
                     wheelController.moveXY(0, speed);
@@ -35,8 +35,8 @@ public abstract class AutonomousLibrary extends Configurator {
     public void moveRightCentimeters(double distance, double speed) {
         double startingEncoder = wheelController.rightEncoder();
         if (!busyMoving) {
+            busyMoving = true;
             stateMachine.addState(new State(() -> {
-                busyMoving = true;
                 double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
                 if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
                     wheelController.moveXY(speed, 0);

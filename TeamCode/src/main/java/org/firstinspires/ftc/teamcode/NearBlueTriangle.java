@@ -35,8 +35,8 @@ public class NearBlueTriangle extends AutonomousLibrary {
 
         State moveForwardToPlatform = new StartState(() -> moveForwardCentimeters(-73, -1), () -> busyMoving, () -> stateMachine.addState(grabPlatform), "MoveForwardToPlatform");
 
-        State strafeAlign = new StartState(() -> moveRightCentimeters(40.5, 1), () -> busyMoving, () -> stateMachine.addState(grabPlatform), "StrafeAlign");
+        State strafeAlign = new StartState(() -> moveRightCentimeters(40.5, 1), () -> busyMoving, () -> stateMachine.addState(moveForwardToPlatform), "StrafeAlign");
 
-        stateMachine.addState(moveForwardToPlatform);
+        stateMachine.addState(strafeAlign);
     }
 }
