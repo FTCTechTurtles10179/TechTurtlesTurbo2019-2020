@@ -19,7 +19,7 @@ public class NearBlueTriangle extends AutonomousLibrary {
 
         State strafeRightToBridge = new StartState(() -> {
             moveRightCentimeters(-135, -1);
-        }, this::isBusy, () -> {}, "StrafeRightToBridge");
+        }, () -> !getMotorsMoving(), () -> {}, "StrafeRightToBridge");
 
         State releasePlatform = new State(() -> {
             foundationGrabber.setPosition(1);
@@ -30,7 +30,7 @@ public class NearBlueTriangle extends AutonomousLibrary {
 
         State moveBackwardFromPlatform = new StartState(() -> {
             moveForwardCentimeters(73, 1);
-        }, this::isBusy, () -> {
+        }, () -> !getMotorsMoving(), () -> {
             stateMachine.addState(releasePlatform);
         },"MoveBackwardFromPlatform");
 
@@ -43,15 +43,21 @@ public class NearBlueTriangle extends AutonomousLibrary {
 
         State moveForwardToPlatform = new StartState(() -> {
             moveForwardCentimeters(-73, -1);
-        }, this::isBusy, () -> {
+        }, () -> !getMotorsMoving(), () -> {
             stateMachine.addState(grabPlatform);
         }, "MoveForwardToPlatform");
 
         State strafeAlign = new StartState(() -> {
+            wheelController.moveXY(0, 0.1);
             moveRightCentimeters(40.5, 1);
-        }, this::isBusy, () -> {
+        }, () -> !getMotorsMoving(), () -> {
             stateMachine.addState(moveForwardToPlatform);
         }, "StrafeAlign");
+
+        stateMachine.addState(new State(() -> {
+            telemetry.addData("Thingy", !getMotorsMoving());
+            return false;
+        }, () -> {}));
 
         stateMachine.addState(strafeAlign);
     }

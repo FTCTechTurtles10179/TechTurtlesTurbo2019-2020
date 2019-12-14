@@ -22,7 +22,7 @@ public class StateMachine {
 
     void runStates() {
         for (State state: statesToAdd) {
-            states.add(state);
+            states.add(0, state);
         }
         statesToAdd.clear();
 

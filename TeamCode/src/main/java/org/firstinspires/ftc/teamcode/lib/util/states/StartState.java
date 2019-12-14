@@ -38,14 +38,16 @@ public class StartState extends State {
 
     @Override
     public boolean execute() {
+        boolean stop = false;
         if (firstRun) { //If this is the first time running
             firstRun = false;
             programOnStart.execute();
             if (isTimer) { //If it is also a timer
                 timeStarted = currentTimeMillis(); //Then the current time is when it started
             }
+        } else {
+            stop = (!firstRun && currentTimeMillis() >= timeStarted + millisToRun) || program.execute(); //True if the state wants to be deactivated or time ran out
         }
-        boolean stop = (!firstRun && currentTimeMillis() >= timeStarted + millisToRun) || program.execute(); //True if the state wants to be deactivated or time ran out
         if (stop) programOnStop.execute(); //Run what's on stop if we are stopping
         return stop;
     }

@@ -9,10 +9,10 @@ public abstract class AutonomousLibrary extends Configurator {
     private double slowDown = 5;
     private double slowDist = 5;
     private double stopDist = 0.5;
-    public boolean busyMoving = false;
+    public boolean doneMoving = false;
 
     public void moveForwardCentimeters(double distance, double speed) {
-        busyMoving = true;
+        doneMoving = true;
         double startingEncoder = wheelController.avgEncoder();
         stateMachine.addState(new State(() -> {
             double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
@@ -26,12 +26,12 @@ public abstract class AutonomousLibrary extends Configurator {
             return stop;
         }, () -> {
             wheelController.stopWheels();
-            busyMoving = false;
+            doneMoving = false;
         }, "autoLibMoveForwardCm"));
     }
 
     public void moveRightCentimeters(double distance, double speed) {
-        busyMoving = true;
+        doneMoving = true;
         double startingEncoder = wheelController.rightEncoder();
         stateMachine.addState(new State(() -> {
             double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
@@ -45,7 +45,7 @@ public abstract class AutonomousLibrary extends Configurator {
             return stop;
         }, () -> {
             wheelController.stopWheels();
-            busyMoving = false;
+            doneMoving = false;
         }, "autoLibMoveRightCm"));
     }
 }

@@ -101,4 +101,8 @@ public abstract class Configurator extends OpMode{
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
+
+    public boolean getMotorsMoving() {
+        return (oldFrontLeftEncoder != frontLeft.getCurrentPosition() || oldFrontRightEncoder != frontRight.getCurrentPosition() || oldBackLeftEncoder != backLeft.getCurrentPosition() || oldBackRightEncoder != backRight.getCurrentPosition());
+    }
 }
