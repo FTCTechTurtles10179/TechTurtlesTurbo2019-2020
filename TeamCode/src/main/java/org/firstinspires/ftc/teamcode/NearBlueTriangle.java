@@ -19,29 +19,39 @@ public class NearBlueTriangle extends AutonomousLibrary {
 
         State strafeRightToBridge = new StartState(() -> {
             moveRightCentimeters(-135, -1);
-        }, () -> isBusy(), () -> {}, "StrafeRightToBridge");
+        }, this::isBusy, () -> {}, "StrafeRightToBridge");
 
         State releasePlatform = new State(() -> {
             foundationGrabber.setPosition(1);
             return false;
-        }, () -> stateMachine.addState(strafeRightToBridge), 1000, "ReleasePlatform");
+        }, () -> {
+            stateMachine.addState(strafeRightToBridge);
+        }, 1000, "ReleasePlatform");
 
         State moveBackwardFromPlatform = new StartState(() -> {
-            moveForwardCentimeters(73, 1)
-        }, () -> isBusy(), () -> stateMachine.addState(releasePlatform),"MoveBackwardFromPlatform");
+            moveForwardCentimeters(73, 1);
+        }, this::isBusy, () -> {
+            stateMachine.addState(releasePlatform);
+        },"MoveBackwardFromPlatform");
 
         State grabPlatform = new State(() -> {
             foundationGrabber.setPosition(0);
             return false;
-        }, () -> stateMachine.addState(moveBackwardFromPlatform), 1000, "GrabPlatform");
+        }, () -> {
+            stateMachine.addState(moveBackwardFromPlatform);
+        }, 1000, "GrabPlatform");
 
         State moveForwardToPlatform = new StartState(() -> {
             moveForwardCentimeters(-73, -1);
-        }, () -> isBusy(), () -> stateMachine.addState(grabPlatform), "MoveForwardToPlatform");
+        }, this::isBusy, () -> {
+            stateMachine.addState(grabPlatform);
+        }, "MoveForwardToPlatform");
 
         State strafeAlign = new StartState(() -> {
             moveRightCentimeters(40.5, 1);
-        }, () -> isBusy(), () -> stateMachine.addState(moveForwardToPlatform), "StrafeAlign");
+        }, this::isBusy, () -> {
+            stateMachine.addState(moveForwardToPlatform);
+        }, "StrafeAlign");
 
         stateMachine.addState(strafeAlign);
     }
