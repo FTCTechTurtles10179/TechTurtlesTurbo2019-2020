@@ -12,44 +12,40 @@ public abstract class AutonomousLibrary extends Configurator {
     public boolean busyMoving = false;
 
     public void moveForwardCentimeters(double distance, double speed) {
+        busyMoving = true;
         double startingEncoder = wheelController.avgEncoder();
-        if (!busyMoving) {
-            busyMoving = true;
-            stateMachine.addState(new State(() -> {
-                double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
-                if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
-                    wheelController.moveXY(0, speed);
-                } else {
-                    wheelController.moveXY(0, speed / slowDown);
-                }
-                boolean stop = (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) <= stopDist * cmToClickForward);
-                if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
-                return stop;
-            }, () -> {
-                wheelController.stopWheels();
-                busyMoving = false;
-            }, "autoLibMoveForwardCm"));
-        }
+        stateMachine.addState(new State(() -> {
+            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
+            if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
+                wheelController.moveXY(0, speed);
+            } else {
+                wheelController.moveXY(0, speed / slowDown);
+            }
+            boolean stop = (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) <= stopDist * cmToClickForward);
+            if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
+            return stop;
+        }, () -> {
+            wheelController.stopWheels();
+            busyMoving = false;
+        }, "autoLibMoveForwardCm"));
     }
 
     public void moveRightCentimeters(double distance, double speed) {
+        busyMoving = true;
         double startingEncoder = wheelController.rightEncoder();
-        if (!busyMoving) {
-            busyMoving = true;
-            stateMachine.addState(new State(() -> {
-                double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
-                if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
-                    wheelController.moveXY(speed, 0);
-                } else {
-                    wheelController.moveXY(speed / slowDown, 0);
-                }
-                boolean stop = (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) <= stopDist * cmToClickRight);
-                if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
-                return stop;
-            }, () -> {
-                busyMoving = false;
-                wheelController.stopWheels();
-            }, "autoLibMoveRightCm"));
-        }
+        stateMachine.addState(new State(() -> {
+            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
+            if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
+                wheelController.moveXY(speed, 0);
+            } else {
+                wheelController.moveXY(speed / slowDown, 0);
+            }
+            boolean stop = (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) <= stopDist * cmToClickRight);
+            if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
+            return stop;
+        }, () -> {
+            wheelController.stopWheels();
+            busyMoving = false;
+        }, "autoLibMoveRightCm"));
     }
 }
