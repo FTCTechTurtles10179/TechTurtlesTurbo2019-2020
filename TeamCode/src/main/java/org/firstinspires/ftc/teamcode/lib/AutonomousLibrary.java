@@ -18,9 +18,9 @@ public abstract class AutonomousLibrary extends Configurator {
                 busyMoving = true;
                 double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
                 if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
-                    wheelController.moveXYTurn(0, speed, turnAdjust);
+                    wheelController.moveXY(0, speed);
                 } else {
-                    wheelController.moveXYTurn(0, speed / slowDown, turnAdjust);
+                    wheelController.moveXY(0, speed / slowDown);
                 }
                 boolean stop = (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) <= stopDist * cmToClickForward);
                 if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
@@ -39,9 +39,9 @@ public abstract class AutonomousLibrary extends Configurator {
                 busyMoving = true;
                 double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
                 if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
-                    wheelController.moveXYTurn(speed, 0, turnAdjust);
+                    wheelController.moveXY(speed, 0);
                 } else {
-                    wheelController.moveXYTurn(speed / slowDown, 0, turnAdjust);
+                    wheelController.moveXY(speed / slowDown, 0);
                 }
                 boolean stop = (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) <= stopDist * cmToClickRight);
                 if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
