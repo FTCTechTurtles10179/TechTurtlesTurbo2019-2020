@@ -22,14 +22,14 @@ public class NearBlueTriangle extends AutonomousLibrary {
         }, () -> busyMoving, () -> {}, "StrafeRightToBridge");
 
         State releasePlatform = new State(() -> {
-            foundationGrabber.setPosition(0);
+            foundationGrabber.setPosition(1);
             return false;
         }, () -> stateMachine.addState(strafeRightToBridge), 1000, "ReleasePlatform");
 
         State moveBackwardFromPlatform = new StartState(() -> moveForwardCentimeters(73, 1), () -> busyMoving, () -> stateMachine.addState(releasePlatform),"MoveBackwardFromPlatform");
 
         State grabPlatform = new State(() -> {
-            foundationGrabber.setPosition(1);
+            foundationGrabber.setPosition(0);
             return false;
         }, () -> stateMachine.addState(moveBackwardFromPlatform), 1000, "GrabPlatform");
 
