@@ -20,7 +20,7 @@ public class StateMachine {
         statesToAdd.add(state);
     }
 
-    public void runStates() {
+    void runStates() {
         for (State state: statesToAdd) {
             states.add(state);
         }
