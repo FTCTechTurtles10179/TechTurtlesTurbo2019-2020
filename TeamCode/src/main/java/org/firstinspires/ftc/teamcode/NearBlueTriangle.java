@@ -14,12 +14,12 @@ public class NearBlueTriangle extends AutonomousLibrary {
     @Override
     public void setupOpMode() {
         foundationGrabber = getServo("foundationGrabber"); //Get the foundation grabber servo
-        foundationGrabber.setPosition(1);
+        foundationGrabber.setPosition(0.5);
         debugMode = true; //Give telemetry of the running states, encoders, autonomous library, etc.
 
         State strafeRightToBridge = new StartState(() -> {
-            moveRightCentimeters(-135, -1);
-        }, () -> !getMotorsMoving(), () -> {}, "StrafeRightToBridge");
+            moveRightCentimeters(-120, -0.5);
+        }, () -> true, () -> {}, "StrafeRightToBridge");
 
         State releasePlatform = new State(() -> {
             foundationGrabber.setPosition(1);
@@ -29,10 +29,8 @@ public class NearBlueTriangle extends AutonomousLibrary {
         }, 1000, "ReleasePlatform");
 
         State moveBackwardFromPlatform = new StartState(() -> {
-            moveForwardCentimeters(73, 1);
-        }, () -> !getMotorsMoving(), () -> {
-            stateMachine.addState(releasePlatform);
-        },"MoveBackwardFromPlatform");
+            moveForwardCentimeters(110, 0.5, releasePlatform);
+        }, () -> true, () -> {},"MoveBackwardFromPlatform");
 
         State grabPlatform = new State(() -> {
             foundationGrabber.setPosition(0);
@@ -42,23 +40,18 @@ public class NearBlueTriangle extends AutonomousLibrary {
         }, 1000, "GrabPlatform");
 
         State moveForwardToPlatform = new StartState(() -> {
-            moveForwardCentimeters(-73, -1);
-        }, () -> !getMotorsMoving(), () -> {
-            stateMachine.addState(grabPlatform);
-        }, "MoveForwardToPlatform");
+            moveForwardCentimeters(-70, -0.5, grabPlatform);
+        }, () -> true, () -> {}, "MoveForwardToPlatform");
 
         State strafeAlign = new StartState(() -> {
             wheelController.moveXY(0, 0.1);
-            moveRightCentimeters(40.5, 1);
-        }, () -> !getMotorsMoving(), () -> {
-            stateMachine.addState(moveForwardToPlatform);
-        }, "StrafeAlign");
+            moveRightCentimeters(40.5, 0.5, moveForwardToPlatform);
+        }, () -> true, () -> {}, "StrafeAlign");
 
-        stateMachine.addState(new State(() -> {
-            telemetry.addData("Thingy", !getMotorsMoving());
-            return false;
-        }, () -> {}));
+        State moveOffWall = new StartState(() -> {
+            moveForwardCentimeters(-8, -0.5, strafeAlign);
+        }, () -> true, () -> {}, "MoveForwardToPlatform");
 
-        stateMachine.addState(strafeAlign);
+        stateMachine.addState(moveOffWall);
     }
 }

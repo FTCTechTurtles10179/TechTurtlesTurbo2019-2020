@@ -19,6 +19,7 @@ public abstract class Configurator extends OpMode{
     private int oldFrontRightEncoder = 999999;
     private int oldBackLeftEncoder = 999999;
     private int oldBackRightEncoder = 999999;
+    private boolean faultOccured = false;
 
     public StateMachine stateMachine;
     public WheelController wheelController;
@@ -85,19 +86,24 @@ public abstract class Configurator extends OpMode{
 
 
     public void detectMotorFault() {
+        if (faultOccured) telemetry.addLine("A motor fault occurred!");
         //Check if the front left motor is powered but the encoder is not moving
         if (frontLeft.getPower() != 0 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {
             //If so, there is an encoder issue so we disable encoders
+            faultOccured = true;
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         //Do the same for the other motors
         if (frontRight.getPower() != 0 && oldFrontRightEncoder == frontRight.getCurrentPosition()) {
+            faultOccured = true;
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (backLeft.getPower() != 0 && oldBackLeftEncoder == backLeft.getCurrentPosition()) {
+            faultOccured = true;
             backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         if (backRight.getPower() != 0 && oldBackRightEncoder == backRight.getCurrentPosition()) {
+            faultOccured = true;
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }

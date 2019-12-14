@@ -39,7 +39,20 @@ public class WheelController {
     }
 
     public void moveXY(double tx, double ty) {
-        moveXYTurn(tx, -ty, 0);
+        double frontLeftSpd = ty;
+        double frontRightSpd = ty;
+        double backLeftSpd = ty;
+        double backRightSpd = ty;
+
+        frontLeftSpd -= tx;
+        backLeftSpd += tx;
+        frontRightSpd += tx;
+        backRightSpd -= tx;
+
+        frontLeft.setPower(Range.clip(frontLeftSpd, -1, 1));
+        frontRight.setPower(Range.clip(frontRightSpd, -1, 1));
+        backLeft.setPower(Range.clip(backLeftSpd, -1, 1));
+        backRight.setPower(Range.clip(backRightSpd, -1, 1));
     }
 
     public void moveTurn(double tspeed) {
@@ -94,15 +107,15 @@ public class WheelController {
         backLeft = config.backLeft;
         backRight = config.backRight;
 
-        if (config.debugMode) {
-            config.stateMachine.addState(new State(() -> {
+        config.stateMachine.addState(new State(() -> {
+            if (config.debugMode) {
                 config.telemetry.addData("frontLeftEncoder", frontLeft.getCurrentPosition());
                 config.telemetry.addData("frontRightEncoder", frontRight.getCurrentPosition());
                 config.telemetry.addData("backLeftEncoder", backLeft.getCurrentPosition());
                 config.telemetry.addData("backRightEncoder", backRight.getCurrentPosition());
-                return true;
-            }, () -> {}, "Hidden"));
-        }
+            }
+            return false;
+        }, () -> {}, "Hidden"));
 
         runUsingEncoder();
 

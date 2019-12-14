@@ -6,13 +6,11 @@ public abstract class AutonomousLibrary extends Configurator {
     private double cmToClickForward = 16.5;
     private double cmToClickRight = 24.3;
     private double turnDamping = 2;
-    private double slowDown = 5;
-    private double slowDist = 5;
-    private double stopDist = 0.5;
-    public boolean doneMoving = false;
+    private double slowDown = 8;
+    private double slowDist = 20;
+    private double stopDist = 1;
 
     public void moveForwardCentimeters(double distance, double speed) {
-        doneMoving = true;
         double startingEncoder = wheelController.avgEncoder();
         stateMachine.addState(new State(() -> {
             double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
@@ -26,12 +24,10 @@ public abstract class AutonomousLibrary extends Configurator {
             return stop;
         }, () -> {
             wheelController.stopWheels();
-            doneMoving = false;
         }, "autoLibMoveForwardCm"));
     }
 
     public void moveRightCentimeters(double distance, double speed) {
-        doneMoving = true;
         double startingEncoder = wheelController.rightEncoder();
         stateMachine.addState(new State(() -> {
             double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
@@ -45,7 +41,42 @@ public abstract class AutonomousLibrary extends Configurator {
             return stop;
         }, () -> {
             wheelController.stopWheels();
-            doneMoving = false;
+        }, "autoLibMoveRightCm"));
+    }
+
+    public void moveForwardCentimeters(double distance, double speed, State runOnStop) {
+        double startingEncoder = wheelController.avgEncoder();
+        stateMachine.addState(new State(() -> {
+            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
+            if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
+                wheelController.moveXY(0, speed);
+            } else {
+                wheelController.moveXY(0, speed / slowDown);
+            }
+            boolean stop = (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) <= stopDist * cmToClickForward);
+            if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
+            return stop;
+        }, () -> {
+            wheelController.stopWheels();
+            stateMachine.addState(runOnStop);
+        }, "autoLibMoveForwardCm"));
+    }
+
+    public void moveRightCentimeters(double distance, double speed, State runOnStop) {
+        double startingEncoder = wheelController.rightEncoder();
+        stateMachine.addState(new State(() -> {
+            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
+            if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
+                wheelController.moveXY(speed, 0);
+            } else {
+                wheelController.moveXY(speed / slowDown, 0);
+            }
+            boolean stop = (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) <= stopDist * cmToClickRight);
+            if (debugMode) telemetry.addData("AutoLibStopWheels", stop);
+            return stop;
+        }, () -> {
+            wheelController.stopWheels();
+            stateMachine.addState(runOnStop);
         }, "autoLibMoveRightCm"));
     }
 }
