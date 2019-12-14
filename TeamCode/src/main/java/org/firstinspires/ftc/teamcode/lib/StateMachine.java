@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-import org.firstinspires.ftc.teamcode.lib.util.State;
+import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @Disabled
-public class Configurator extends OpMode{
+public abstract class Configurator extends OpMode{
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
@@ -75,7 +75,7 @@ public class Configurator extends OpMode{
         setupOpMode();
     }
 
-    public void setupOpMode() {}
+    public abstract void setupOpMode();
 
     @Override
     public void loop() {

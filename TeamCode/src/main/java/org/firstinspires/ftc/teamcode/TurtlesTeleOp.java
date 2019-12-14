@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.Configurator;
-import org.firstinspires.ftc.teamcode.lib.util.State;
+import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 @TeleOp(name="TeleOp", group="default")
 

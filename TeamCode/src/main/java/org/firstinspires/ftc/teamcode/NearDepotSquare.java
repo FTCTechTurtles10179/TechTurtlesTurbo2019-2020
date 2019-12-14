@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.AutonomousLibrary;
-import org.firstinspires.ftc.teamcode.lib.util.State;
+import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 @Autonomous(name="NearDepotSquare")
 public class NearDepotSquare extends AutonomousLibrary {

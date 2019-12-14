@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.lib.util;
+package org.firstinspires.ftc.teamcode.lib.util.states;
 
 import org.firstinspires.ftc.teamcode.lib.util.command.BooleanCommand;
 import org.firstinspires.ftc.teamcode.lib.util.command.Command;
@@ -6,13 +6,13 @@ import org.firstinspires.ftc.teamcode.lib.util.command.Command;
 import static java.lang.System.currentTimeMillis;
 
 public class State {
-    private BooleanCommand program; //What this state actually runs
-    private Command programOnStop; //What runs when the state is finished
-    private boolean isTimer = false; //If it uses a timer or runs indefinitely
-    private boolean firstRun = true; //Is it the first time the state was run?
-    private long timeStarted = -1; //When the state is first run
-    private long millisToRun = 0; //If the state only needs to run for x amount of milliseconds
-    private String stateName = "Unnamed"; //Cosmetic
+    BooleanCommand program; //What this state actually runs
+    Command programOnStop; //What runs when the state is finished
+    boolean isTimer = false; //If it uses a timer or runs indefinitely
+    boolean firstRun = true; //Is it the first time the state was run?
+    long timeStarted = -1; //When the state is first run
+    long millisToRun = 0; //If the state only needs to run for x amount of milliseconds
+    String stateName = "Unnamed"; //Cosmetic
 
     public State(BooleanCommand program, Command programOnStop) { //Most basic state, just a command to run indefinitely
         this.program = program;
@@ -38,6 +38,10 @@ public class State {
         this.stateName = stateName;
         this.millisToRun = millisToRun;
         isTimer = true;
+    }
+
+    public static State blank() {
+        return new State(() -> {return true;}, () -> {}, "Hidden");
     }
 
     public String getStateName() { //Prevent state name modification
