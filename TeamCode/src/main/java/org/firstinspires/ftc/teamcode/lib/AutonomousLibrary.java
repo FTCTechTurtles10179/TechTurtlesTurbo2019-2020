@@ -16,7 +16,7 @@ public abstract class AutonomousLibrary extends Configurator {
         if (!busyMoving) {
             stateMachine.addState(new State(() -> {
                 busyMoving = true;
-                double turnAdjust = (Math.abs(wheelController.leftEncoder()) - Math.abs(wheelController.rightEncoder())) / turnDamping;
+                double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
                 if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
                     wheelController.moveXYTurn(0, speed, turnAdjust);
                 } else {
@@ -37,7 +37,7 @@ public abstract class AutonomousLibrary extends Configurator {
         if (!busyMoving) {
             stateMachine.addState(new State(() -> {
                 busyMoving = true;
-                double turnAdjust = (Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
+                double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
                 if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
                     wheelController.moveXYTurn(speed, 0, turnAdjust);
                 } else {
