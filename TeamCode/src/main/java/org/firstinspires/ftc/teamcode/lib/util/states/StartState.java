@@ -39,9 +39,9 @@ public class StartState extends State {
     @Override
     public boolean execute() {
         if (firstRun) { //If this is the first time running
+            firstRun = false;
             programOnStart.execute();
             if (isTimer) { //If it is also a timer
-                firstRun = false;
                 timeStarted = currentTimeMillis(); //Then the current time is when it started
             }
         }
