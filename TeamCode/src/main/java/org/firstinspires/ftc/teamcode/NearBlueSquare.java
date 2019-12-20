@@ -7,14 +7,13 @@ import org.firstinspires.ftc.teamcode.lib.AutonomousLibrary;
 import org.firstinspires.ftc.teamcode.lib.util.states.StartState;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
-@Autonomous(name="NearDepotSquare")
-public class NearDepotSquare extends AutonomousLibrary {
+@Autonomous(name="NearBlueSquare")
+public class NearBlueSquare extends AutonomousLibrary {
     Servo foundationGrabber;
 
     public void setupOpMode(){
         foundationGrabber = getServo("foundationGrabber"); //Get the foundation grabber servo
         foundationGrabber.setPosition(1);
-        debugMode = true; //Give telemetry of the running states, encoders, autonomous library, etc.
 
         State moveForwardToStone = new StartState(() -> {
             moveForwardCentimeters(55, 0.5);
@@ -28,11 +27,5 @@ public class NearDepotSquare extends AutonomousLibrary {
         State turnLeft = new StartState(() -> {
             wheelController.moveTurn(1);
         }, () -> true, () -> {}, "StrafeRightToBridge");
-    }
-
-    public static class Smoother {
-        public static double smooth(double input){
-            return input * input * input * input * input * input * input;
-        }
     }
 }

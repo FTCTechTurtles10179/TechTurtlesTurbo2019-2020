@@ -13,7 +13,7 @@ public abstract class Configurator extends OpMode{
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    public boolean debugMode = false;
+    private boolean debugMode = false;
 
     private int oldFrontLeftEncoder = 999999;
     private int oldFrontRightEncoder = 999999;
@@ -64,7 +64,7 @@ public abstract class Configurator extends OpMode{
     }
 
     @Override
-    public void init() {
+    public void init() { //On init, setup motors, stateMachine, and wheelController
         frontLeft = getDcMotor("frontLeft");
         frontRight = getDcMotor("frontRight");
         backLeft = getDcMotor("backLeft");
@@ -76,10 +76,16 @@ public abstract class Configurator extends OpMode{
         setupOpMode();
     }
 
+    @Override
+    public void init_loop() {
+        if (gamepad1.a && gamepad1.b && gamepad1.x && gamepad1.y) debugMode = true;
+    }
+
     public abstract void setupOpMode();
 
     @Override
     public void loop() {
+        if (gamepad1.a && gamepad1.b && gamepad1.x && gamepad1.y) debugMode = true;
         detectMotorFault();
         stateMachine.runStates();
     }
@@ -106,6 +112,10 @@ public abstract class Configurator extends OpMode{
             faultOccured = true;
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+    }
+
+    public boolean getDebugMode() {
+        return debugMode;
     }
 
     public boolean getMotorsMoving() {

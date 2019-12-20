@@ -15,7 +15,6 @@ public class NearBlueTriangle extends AutonomousLibrary {
     public void setupOpMode() {
         foundationGrabber = getServo("foundationGrabber"); //Get the foundation grabber servo
         foundationGrabber.setPosition(0.5);
-        debugMode = true; //Give telemetry of the running states, encoders, autonomous library, etc.
 
         State strafeRightToBridge = new StartState(() -> {
             moveRightCentimeters(-120, -0.5);

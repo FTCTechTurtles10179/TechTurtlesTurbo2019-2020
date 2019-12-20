@@ -36,7 +36,11 @@ public class TurtlesTeleOp extends Configurator {
             }
             slowModeJustSwapped = (gamepad1.right_bumper || gamepad1.left_bumper);
 
-            wheelController.moveXYTurn(NearDepotSquare.Smoother.smooth(gamepad1.right_stick_x / slowMode), NearDepotSquare.Smoother.smooth(gamepad1.left_stick_y / slowMode), NearDepotSquare.Smoother.smooth(gamepad1.left_stick_x / slowMode) * 0.8);
+            wheelController.moveXYTurn(
+                    gamepad1.right_stick_x / slowMode,
+                    gamepad1.left_stick_y / slowMode,
+                    gamepad1.left_stick_x / slowMode * 0.8
+            );
 
             double armSpeed = -gamepad2.left_stick_y;
             if (armMotor.getCurrentPosition() <= 0 && armLimit)

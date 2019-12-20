@@ -6,25 +6,23 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
-public class WheelController {
+public class WheelController { //This class can be changed for each drive train without breaking our library
 
+    //Define the four wheels since we are using a mecanum drive train
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    public final boolean hasStrafe = true;
-    public final boolean mecanum = true;
-
-    public int avgEncoder() {
+    public int avgEncoder() { //Returns the average of both wheel encoders, or how
         return (frontLeft.getCurrentPosition() + frontRight.getCurrentPosition())/2;
     }
 
-    public int leftEncoder() {
+    public int leftEncoder() { //Returns the frontLeft encoder
         return frontLeft.getCurrentPosition();
     }
 
-    public int rightEncoder() {
+    public int rightEncoder() { //Returns the frontright encoder
         return frontRight.getCurrentPosition();
     }
 
@@ -38,49 +36,64 @@ public class WheelController {
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void moveXY(double tx, double ty) {
+    public void moveXY(double tx, double ty) { //Take in translateX and translateY
+        //Start with how fast we are moving forward
         double frontLeftSpd = ty;
         double frontRightSpd = ty;
         double backLeftSpd = ty;
         double backRightSpd = ty;
 
+        //Add the strafing values
         frontLeftSpd -= tx;
         backLeftSpd += tx;
         frontRightSpd += tx;
         backRightSpd -= tx;
 
+        //Make sure the final output is safe for the motors, or a speed from -1 to 1
         frontLeft.setPower(Range.clip(frontLeftSpd, -1, 1));
         frontRight.setPower(Range.clip(frontRightSpd, -1, 1));
         backLeft.setPower(Range.clip(backLeftSpd, -1, 1));
         backRight.setPower(Range.clip(backRightSpd, -1, 1));
     }
 
-    public void moveTurn(double tspeed) {
-        moveXYTurn(0,0,tspeed);
+    public void moveTurn(double tspeed) {  //Take in turnSpeed
+        //Start with the turn values
+        double frontLeftSpd = tspeed;
+        double backLeftSpd = tspeed;
+        double frontRightSpd = tspeed;
+        double backRightSpd = tspeed;
+
+        //Make sure the final output is safe for the motors, or a speed from -1 to 1
+        frontLeft.setPower(Range.clip(frontLeftSpd, -1, 1));
+        frontRight.setPower(Range.clip(frontRightSpd, -1, 1));
+        backLeft.setPower(Range.clip(backLeftSpd, -1, 1));
+        backRight.setPower(Range.clip(backRightSpd, -1, 1));
     }
 
     public void moveXYTurn(double tx, double ty, double tspeed) {
-        double x = -Range.clip(tx, -1, 1);
-        double y = Range.clip(ty, -1, 1);
-        double speed = Range.clip(-tspeed, -1, 1);
+        //Start with how fast we are moving forward
+        double frontLeftSpd = ty;
+        double frontRightSpd = ty;
+        double backLeftSpd = ty;
+        double backRightSpd = ty;
 
-        // The speed at which we will move the robot
-        double r = Math.hypot(-x, y);
+        //Add the strafing values
+        frontLeftSpd -= tx;
+        backLeftSpd += tx;
+        frontRightSpd += tx;
+        backRightSpd -= tx;
 
-        // The angle at which the will move the robot
-        double robotAngle = Math.atan2(y, -x) - Math.PI / 4;
+        //Add the turning values
+        frontLeftSpd += tspeed;
+        backLeftSpd += tspeed;
+        frontRightSpd -= tspeed;
+        backRightSpd -= tspeed;
 
-        // Do the calculations for the wheel speeds
-        double v1 = r * Math.cos(robotAngle);
-        double v2 = r * Math.sin(robotAngle);
-        double v3 = r * Math.sin(robotAngle);
-        double v4 = r * Math.cos(robotAngle);
-
-        // Finally, take the math we did for the speed of the wheels and actually set the wheel's speed
-        frontLeft.setPower(-v1 + speed);
-        frontRight.setPower(-v2 - speed);
-        backLeft.setPower(-v3 + speed);
-        backRight.setPower(-v4 - speed);
+        //Make sure the final output is safe for the motors, or a speed from -1 to 1
+        frontLeft.setPower(Range.clip(frontLeftSpd, -1, 1));
+        frontRight.setPower(Range.clip(frontRightSpd, -1, 1));
+        backLeft.setPower(Range.clip(backLeftSpd, -1, 1));
+        backRight.setPower(Range.clip(backRightSpd, -1, 1));
     }
 
     public void stopWheels() {
@@ -102,13 +115,15 @@ public class WheelController {
     }
 
     public WheelController(Configurator config) {
+        //Setup all the motors to what config says they are
         frontLeft = config.frontLeft;
         frontRight = config.frontRight;
         backLeft = config.backLeft;
         backRight = config.backRight;
 
+        //Debug state
         config.stateMachine.addState(new State(() -> {
-            if (config.debugMode) {
+            if (config.getDebugMode()) { //If debug mode is active, telemetry the encoders of all wheels
                 config.telemetry.addData("frontLeftEncoder", frontLeft.getCurrentPosition());
                 config.telemetry.addData("frontRightEncoder", frontRight.getCurrentPosition());
                 config.telemetry.addData("backLeftEncoder", backLeft.getCurrentPosition());
@@ -117,8 +132,9 @@ public class WheelController {
             return false;
         }, () -> {}, "Hidden"));
 
-        runUsingEncoder();
+        runUsingEncoder(); //Turn on encoder speed adjustments
 
+        //Reverse frontLeft and backLeft so the wheels all go forward
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
