@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.AutonomousLibrary;
+import org.firstinspires.ftc.teamcode.lib.util.states.StartState;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 @Autonomous(name="NearDepotSquare")
@@ -15,11 +16,18 @@ public class NearDepotSquare extends AutonomousLibrary {
         foundationGrabber.setPosition(1);
         debugMode = true; //Give telemetry of the running states, encoders, autonomous library, etc.
 
-        stateMachine.addState(new State(() -> { //Make a new state, and while it's running
-            //move to the skybridge
-            moveRightCentimeters(-70, -1);
-            return true; //Only run once, return true to remove the state from the statemachine.
-        }, () -> {}, "moveToSkybridge")); //Name it moveToSkybridge
+        State moveForwardToStone = new StartState(() -> {
+            moveForwardCentimeters(55, 0.5);
+        }, () -> true, () -> {}, "MoveForwardToStone");
+        State grabStone = new State(() -> {
+            foundationGrabber.setPosition(1);
+            return false;
+        }, () -> {
+            stateMachine.addState(moveForwardToStone);
+        }, 1000, "GrabStone");
+        State turnLeft = new StartState(() -> {
+            wheelController.moveTurn(1);
+        }, () -> true, () -> {}, "StrafeRightToBridge");
     }
 
     public static class Smoother {
