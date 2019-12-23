@@ -24,18 +24,12 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
             moveForwardCentimeters(100, 0.75, releaseStone);
         }, "MoveForwardToSkybridge");
 
-        State stopWheels = new State(() -> {
-            wheelController.stopWheels();
-            return false;
-        }, () -> {
-            stateMachine.addState(moveForwardToSkybridge);
-        }, "StopWheels");
-
         State turnLeftTowardSkybridge = new State(() -> {
             wheelController.moveTurn(1);
             return false;
         }, () -> {
-            stateMachine.addState(stopWheels);
+            wheelController.stopWheels();
+            stateMachine.addState(moveForwardToSkybridge);
         }, 1000, "TurnLeftTowardSkybridge");
 
         State grabStone = new State(() -> {
