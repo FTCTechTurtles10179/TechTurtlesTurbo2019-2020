@@ -10,14 +10,14 @@ import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 @Autonomous(name="NearBlueSquareStackless")
 public class NearBlueSquareStackless extends AutonomousLibrary {
-    Servo foundationGrabber;
+    Servo claw;
 
     public void setupOpMode(){
-        foundationGrabber = getServo("foundationGrabber"); //Get the foundation grabber servo
-        foundationGrabber.setPosition(1);
+        claw = getServo("claw"); //Get the foundation grabber servo
+        claw.setPosition(1);
 
         State releaseStone = new SingleState(() -> {
-            foundationGrabber.setPosition(0);
+            claw.setPosition(0);
         }, "ReleaseStone");
 
         State moveForwardToSkybridge = new SingleState(() -> {
@@ -39,7 +39,7 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
         }, 1000, "TurnLeftTowardSkybridge");
 
         State grabStone = new State(() -> {
-            foundationGrabber.setPosition(1);
+            claw.setPosition(1);
             return false;
         }, () -> {
             stateMachine.addState(turnLeftTowardSkybridge);
