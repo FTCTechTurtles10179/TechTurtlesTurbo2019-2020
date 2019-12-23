@@ -43,6 +43,13 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
             moveForwardCentimeters(80,0.5, grabStone);
         }, "MoveForwardToStone");
 
+        State openClaw = new State(() -> {
+            claw.setPosition(0);
+            return false;
+        }, () -> {
+            stateMachine.addState(moveForwardToSkybridge);
+        }, 2000, "OpenClaw");
+
         stateMachine.addState(moveForwardToStone);
     }
 }
