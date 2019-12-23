@@ -41,12 +41,15 @@ public class StartState extends State {
         boolean stop = false;
         if (firstRun) { //If this is the first time running
             firstRun = false;
+            if (debugMode) timeTracker.start();
             programOnStart.execute(); //Run the program on start
+            if (debugMode) timeTracker.end("execute");
             timeStarted = currentTimeMillis(); //Then set the current time is when it started
-        } else if (currentTimeMillis() - timeStarted < 50) { //Wait 50ms due to some issues with AutoLib
-            stop = (!firstRun && currentTimeMillis() >= timeStarted + millisToRun) || program.execute(); //True if the state wants to be deactivated or time ran out
         }
+        if (debugMode) timeTracker.start();
+        stop = (!firstRun && currentTimeMillis() >= timeStarted + millisToRun) || program.execute(); //True if the state wants to be deactivated or time ran out
         if (stop) programOnStop.execute(); //Run what's on stop if we are stopping
+        if (debugMode) timeTracker.end("execute");
         return stop;
     }
 }

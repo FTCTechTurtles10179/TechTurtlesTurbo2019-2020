@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.lib;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class StateMachine {
     ArrayList<State> states; //All of the current running states
@@ -22,17 +21,19 @@ public class StateMachine {
 
     void runStates() {
         for (State state: statesToAdd) {
+            if (config.getDebugMode()) state.debugMode = true;
             states.add(0, state);
         }
         statesToAdd.clear();
 
         ArrayList<State> statesToRemove = new ArrayList<>();
-        State[] statesAsArray = states.toArray(new State[0]);
-        for (int i = 0; i < statesAsArray.length; i++) {
-            if (config.getDebugMode() && statesAsArray[i].getStateName() != "Hidden") {
-                config.telemetry.addLine("State: " + statesAsArray[i].getStateName());
+        for (int i = 0; i < states.size(); i++) {
+            if (config.getDebugMode() && states.get(i).getStateName() != "Hidden") {
+                config.telemetry.addLine(
+                    "State: " + states.get(i).getStateName() + "(" + states.get(i).getAvgRuntime() + "ms)"
+                );
             }
-            if (statesAsArray[i].execute()) statesToRemove.add(statesAsArray[i]);
+            if (states.get(i).execute()) statesToRemove.add(states.get(i));
         }
 
         for (State state: statesToRemove) {
