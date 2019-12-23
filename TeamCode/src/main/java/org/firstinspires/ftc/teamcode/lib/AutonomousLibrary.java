@@ -5,9 +5,8 @@ import org.firstinspires.ftc.teamcode.lib.util.states.State;
 public abstract class AutonomousLibrary extends Configurator {
     private double cmToClickForward = 16.5;
     private double cmToClickRight = 24.3;
-    private double turnDamping = 2;
-    private double slowDown = 3;
-    private double slowDist = 5;
+    private double slowDown = 5;
+    private double slowDist = 10;
     private double stopDist = 0.5;
 
     public void moveForwardCentimeters(double distance, double speed) {
