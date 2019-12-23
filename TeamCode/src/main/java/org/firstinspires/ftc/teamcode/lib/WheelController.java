@@ -60,8 +60,8 @@ public class WheelController { //This class can be changed for each drive train 
         //Start with the turn values
         double frontLeftSpd = tspeed;
         double backLeftSpd = tspeed;
-        double frontRightSpd = tspeed;
-        double backRightSpd = tspeed;
+        double frontRightSpd = -tspeed;
+        double backRightSpd = -tspeed;
 
         //Make sure the final output is safe for the motors, or a speed from -1 to 1
         frontLeft.setPower(Range.clip(frontLeftSpd, -1, 1));
