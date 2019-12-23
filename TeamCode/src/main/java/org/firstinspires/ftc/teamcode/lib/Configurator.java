@@ -13,7 +13,7 @@ public abstract class Configurator extends OpMode{
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    private boolean debugMode = true;
+    private boolean debugMode = false;
 
     private int oldFrontLeftEncoder = 999999;
     private int oldFrontRightEncoder = 999999;
