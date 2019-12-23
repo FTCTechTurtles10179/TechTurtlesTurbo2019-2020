@@ -40,14 +40,14 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
         }, 2000, "GrabStone");
 
         State moveForwardToStone = new SingleState(() -> {
-            moveForwardCentimeters(70,0.5, grabStone);
+            moveForwardCentimeters(80,0.5, grabStone);
         }, "MoveForwardToStone");
 
         State openClaw = new State(() -> {
             claw.setPosition(0);
             return false;
         }, () -> {
-            stateMachine.addState(moveForwardToSkybridge);
+            stateMachine.addState(moveForwardToStone);
         }, 2000, "OpenClaw");
 
         stateMachine.addState(openClaw);
