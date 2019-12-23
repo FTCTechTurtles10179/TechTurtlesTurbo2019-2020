@@ -37,9 +37,9 @@ public class TurtlesTeleOp extends Configurator {
             slowModeJustSwapped = (gamepad1.right_bumper || gamepad1.left_bumper);
 
             wheelController.moveXYTurn(
-                    gamepad1.right_stick_x / slowMode,
-                    gamepad1.left_stick_y / slowMode,
-                    gamepad1.left_stick_x / slowMode * 0.8
+                    gamepad1.left_stick_x / slowMode,
+                    -gamepad1.left_stick_y / slowMode,
+                    -gamepad1.right_stick_x / slowMode * 0.8
             );
 
             double armSpeed = -gamepad2.left_stick_y;
@@ -57,9 +57,6 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.b) claw.setPosition(1);
             if (gamepad2.x) foundationGrabber.setPosition(1);
             if (gamepad2.y) foundationGrabber.setPosition(0);
-
-
-            telemetry.update();
 
             return false;
         }, () -> {}, "teleOp")); //Don't run anything on stop, and name it teleOp
