@@ -32,14 +32,14 @@ public class TurtlesTeleOp extends Configurator {
 
         stateMachine.addState(new State(() -> { //Create a new state
             if ((gamepad1.right_bumper || gamepad1.left_bumper) && !slowModeJustSwapped) {
-                slowMode = (slowMode == 1) ? 1.25 : 1;
+                slowMode = (slowMode == 1) ? 2 : 1;
             }
             slowModeJustSwapped = (gamepad1.right_bumper || gamepad1.left_bumper);
 
             wheelController.moveXYTurn(
-                    gamepad1.left_stick_x / slowMode,
+                    gamepad1.right_stick_x / slowMode,
                     -gamepad1.left_stick_y / slowMode,
-                    -gamepad1.right_stick_x / slowMode * 0.8
+                    -gamepad1.left_stick_x / slowMode * 0.8
             );
 
             double armSpeed = -gamepad2.left_stick_y;
