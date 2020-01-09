@@ -21,7 +21,7 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
         , "ReleaseStone");
 
         State strafeRightToSkybridge = new SingleState(() ->
-            moveRightCentimeters(100,0.75, releaseStone)
+            moveRightCentimeters(105.5,0.75, releaseStone)
         ,"StrafeRightToSkybridge");
 
         State moveBackFromStones = new SingleState(() ->
@@ -35,11 +35,11 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
             stateMachine.addState(moveBackFromStones), 2000, "GrabStone");
 
         State moveForwardToStone = new SingleState(() ->
-            moveForwardCentimeters(75,0.5, grabStone)
+            moveForwardCentimeters(2,0.5, grabStone)
         , "MoveForwardToStone");
 
         State strafeRightToAlign = new SingleState(() ->
-            moveRightCentimeters(15,0.5,moveForwardToStone)
+            moveRightCentimeters(7,0.5,moveForwardToStone)
         , "StrafeRightToAlign");
 
         State openClaw = new State(() -> {
