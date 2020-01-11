@@ -24,8 +24,8 @@ public class NearRedSquareStackless extends AutonomousLibrary {
         armMotor = getDcMotor("armMotor");//Get the armMotor
         claw.setPosition(0);//Open claw
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//Set encoder value of armMotor to 0
-        armMotor.setTargetPosition(armDownEncoder);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setTargetPosition(armDownEncoder);//Lower arm
 
         State strafeRightUnderSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeRightUnderSkybridge
             //Strafe right to Navigate
@@ -59,7 +59,7 @@ public class NearRedSquareStackless extends AutonomousLibrary {
         }, 2000, "GrabStone");//Name the state GrabStone and run for 2 seconds
 
 
-        State moveForwardToStone = new SingleState /*Creates a new state, moveForwardToStone*/(() ->
+        State moveForwardToStone = new SingleState (() ->//Creates a new state, moveForwardToStone
             //Move forward to the stone and pass grabStone into the state machine
             moveForwardCentimeters(75, 0.5, grabStone)
         , "MoveForwardToStone");//Name the state MoveForwardToStone

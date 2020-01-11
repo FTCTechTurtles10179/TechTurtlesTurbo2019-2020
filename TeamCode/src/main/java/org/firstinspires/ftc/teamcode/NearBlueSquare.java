@@ -8,9 +8,8 @@ import org.firstinspires.ftc.teamcode.lib.AutonomousLibrary;
 import org.firstinspires.ftc.teamcode.lib.util.states.SingleState;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
-@Autonomous(name="NearRedSquare")
-public class NearRedSquare extends AutonomousLibrary {
-
+@Autonomous(name="NearBlueSquare")
+public class NearBlueSquare extends AutonomousLibrary {
     //Declare claw servo and armMotor
     Servo claw;
     DcMotor armMotor;
@@ -19,8 +18,7 @@ public class NearRedSquare extends AutonomousLibrary {
     int armDownEncoder = 0;
     int armUpEncoder = 1500;
 
-    @Override
-    public void setupOpMode() {
+    public void setupOpMode(){
         claw = getServo("claw");//Get the claw servo
         armMotor = getDcMotor("armMotor");//Get the armMotor
         claw.setPosition(0);//Open claw
@@ -28,32 +26,32 @@ public class NearRedSquare extends AutonomousLibrary {
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setTargetPosition(armDownEncoder);//Lower arm
 
-        State strafeRightUnderSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeRightUnderSkybridge
-            //Strafe right to Navigate
-            moveRightCentimeters(106, 0.5);
-        }, "StrafeRightUnderSkybridge");//Name the state StrafeRightUnderSkybridge
+        State strafeLeftUnderSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeLeftUnderSkybridge
+            //Strafe left to Navigate
+            moveRightCentimeters(-106, -0.5);
+        }, "StrafeLeftUnderSkybridge");//Name the state StrafeLeftUnderSkybridge
 
         State releaseStone = new State(() -> {//Creates a new state, releaseStone
             claw.setPosition(0);//Deliver the stone
             armMotor.setTargetPosition(armDownEncoder);//Lower arm
             return false;
         }, () -> {
-            stateMachine.addState(strafeRightUnderSkybridge);//Pass strafeRightUnderSkybridge into the state machine
+            stateMachine.addState(strafeLeftUnderSkybridge);//Pass strafeLeftUnderSkybridge into the state machine
         },"ReleaseStone");//Name the state ReleaseStone
 
         State moveForwardToFoundation = new SingleState(() -> {//Create a new SingleState, moveForwardToFoundation
-           //Move forward to the foundation and pass releaseStone into the state machine
+            //Move forward to the foundation and pass releaseStone into the state machine
             moveForwardCentimeters(20,0.5, releaseStone);
         }, "MoveForwardToFoundation");//Name the state MoveForwardToFoundation
 
-        State strafeLeftPastSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeLeftPastSkybridge
-            //Strafe left past the Skybridge and pass moveForwardToFoundation into the state machine
-            moveRightCentimeters(-169,-0.5, moveForwardToFoundation);
-        },"StrafeLeftPastSkybridge");//Name the state StrafeLeftPastSkybridge
+        State strafeRightPastSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeRightPastSkybridge
+            //Strafe right past the Skybridge and pass moveForwardToFoundation into the state machine
+            moveRightCentimeters(169,0.5, moveForwardToFoundation);
+        },"StrafeRightPastSkybridge");//Name the state StrafeRightPastSkybridge
 
         State moveBackFromStones = new SingleState(() -> {//Creates a new SingleState, moveBackFromStones
-            //Move back from the stones and pass strafeLeftPastSkybridge into the state machine
-            moveForwardCentimeters(-20, -0.5, strafeLeftPastSkybridge);
+            //Move back from the stones and pass strafeRightPastSkybridge into the state machine
+            moveForwardCentimeters(-20, -0.5, strafeRightPastSkybridge);
         }, "MoveBackFromStones");//Name the state MoveBackFromStones
 
         State grabStone = new State(() -> {//Creates a new state, grabStone
@@ -64,17 +62,18 @@ public class NearRedSquare extends AutonomousLibrary {
             stateMachine.addState(moveBackFromStones);//Pass moveBackFromStones into the state machine
         }, 2000, "GrabStone");//Name the state GrabStone and run for 2 seconds
 
+
         State moveForwardToStone = new SingleState(() -> {//Creates a new SingleState, moveForwardToStone
             //Move forward to the stone and pass grabStone into the state machine
             moveForwardCentimeters(75, 0.5, grabStone);
         }, "MoveForwardToStone");//Name the state MoveForwardToStone
 
-        State strafeLeftToAlign = new SingleState(() -> {//Creates a new SingleState, strafeLeftToAlign
-            //Strafe left slightly to align with the center stone in the right 3 stones
+        State strafeRightToAlign = new SingleState(() -> {//Creates a new SingleState, strafeRightToAlign
+            //Strafe right slightly to align with the center stone in the right 3 stones
             //Pass moveForwardToStone into the state machine
-            moveRightCentimeters(-7, -0.5, moveForwardToStone);
-        }, "StrafeRightToAlign");//Name the state StrafeLeftToAlign
+            moveRightCentimeters(7, 0.5, moveForwardToStone);
+        }, "StrafeRightToAlign");//Name the state StrafeRightToAlign
 
-        stateMachine.addState(strafeLeftToAlign);//Passes strafeLeftToAlign into the state machine, calling it
+        stateMachine.addState(strafeRightToAlign);//Passes strafeRightToAlign into the state machine, calling it
     }
 }

@@ -24,8 +24,8 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
         armMotor = getDcMotor("armMotor");//Get the armMotor
         claw.setPosition(0);//Open claw
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//Set encoder value of armMotor to 0
-        armMotor.setTargetPosition(armDownEncoder);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setTargetPosition(armDownEncoder);//Lower arm
 
         State strafeLeftUnderSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeLeftUnderSkybridge
             //Strafe left to Navigate
