@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.Configurator;
+import org.firstinspires.ftc.teamcode.lib.MecanumOdometer;
+import org.firstinspires.ftc.teamcode.lib.util.data.PVector;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 @TeleOp(name="TeleOp", group="default")
@@ -19,6 +21,7 @@ public class TurtlesTeleOp extends Configurator {
     double slowMode = 1;
     boolean slowModeJustSwapped = false;
     boolean armLimit = true;
+    MecanumOdometer odometer;
 
     @Override
     public void setupOpMode() {
@@ -29,6 +32,10 @@ public class TurtlesTeleOp extends Configurator {
         armToucher = getTouchSensor("armToucher");
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        odometer.setRot(0);
+        odometer.setPos(new PVector(0, 0));
+        odometer.beginOdometry();
 
         stateMachine.addState(new State(() -> { //Create a new state
             if ((gamepad1.right_bumper || gamepad1.left_bumper) && !slowModeJustSwapped) {
@@ -57,6 +64,8 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.b) claw.setPosition(1);
             if (gamepad2.x) foundationGrabber.setPosition(1);
             if (gamepad2.y) foundationGrabber.setPosition(0);
+
+            telemetry.addLine("X: " + odometer.getPos().x + " Y: " + odometer.getPos().y + " Rot: " + odometer.getRot());
 
             return false;
         }, () -> {}, "teleOp")); //Don't run anything on stop, and name it teleOp

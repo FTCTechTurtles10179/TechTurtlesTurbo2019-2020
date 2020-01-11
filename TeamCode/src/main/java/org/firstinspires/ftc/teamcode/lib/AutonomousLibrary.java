@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode.lib;
 
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.lib.util.data.PVector;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
+
+import java.util.ArrayList;
 
 public abstract class AutonomousLibrary extends Configurator {
     private double cmToClickForward = 16.5;
@@ -9,6 +14,54 @@ public abstract class AutonomousLibrary extends Configurator {
     private double slowDist = 5;
     private double stopDist = 0.5;
 
+    ArrayList<PVector> targetPos = new ArrayList<>();
+    ArrayList<Double> targetRot = new ArrayList<>();
+    ArrayList<State> states = new ArrayList<>();
+    MecanumOdometer odometry = new MecanumOdometer(this);
+
+    public void initializeOdometry(PVector startingPos, double startingRot) {
+        odometry.setPos(startingPos);
+        odometry.setRot(startingRot);
+        odometry.beginOdometry();
+
+        stateMachine.addState(new State(() -> {
+            updateWheelSpeed();
+            return false;
+        }, () -> {}, "Hidden"));
+    }
+
+    private void updateWheelSpeed() {
+        if (targetPos.size() > 1) {
+            PVector motionVector = PVector.sub(odometry.getPos(), targetPos.get(0)).setMag(1);
+            double turn = Range.clip((odometry.getRot() - targetRot.get(0)), -1, 1);
+            wheelController.moveXYTurn(motionVector.x, motionVector.y, turn);
+        } else if (targetPos.size() > 0) {
+            PVector motionVector = PVector.sub(odometry.getPos(), targetPos.get(0)).setMag(Range.clip(PVector.sub(odometry.getPos(), targetPos.get(0)).mag()/slowDist, -1, 1));
+            double turn = Range.clip((odometry.getRot() - targetRot.get(0))/slowDist, -1, 1);
+            wheelController.moveXYTurn(motionVector.x, motionVector.y, turn);
+        }
+
+        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && Math.abs(odometry.getRot() - targetRot.get(0)) < stopDist) {
+            if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
+            states.remove(0);
+            targetPos.remove(0);
+            targetRot.remove(0);
+        }
+    }
+
+    public void setTargetXYRot(PVector pos, double rot) {
+        targetPos.add(pos);
+        targetRot.add(rot);
+        states.add(State.blank());
+    }
+
+    public void setTargetXYRot(PVector pos, double rot, State onFinished) {
+        targetPos.add(pos);
+        targetRot.add(rot);
+        states.add(onFinished);
+    }
+
+    @Deprecated
     public void moveForwardCentimeters(double distance, double speed) {
         double startingEncoder = wheelController.avgEncoder();
         stateMachine.addState(new State(() -> {
@@ -26,6 +79,7 @@ public abstract class AutonomousLibrary extends Configurator {
         }, "autoLibMoveForwardCm"));
     }
 
+    @Deprecated
     public void moveRightCentimeters(double distance, double speed) {
         double startingEncoder = wheelController.rightEncoder();
         stateMachine.addState(new State(() -> {
@@ -43,6 +97,7 @@ public abstract class AutonomousLibrary extends Configurator {
         }, "autoLibMoveRightCm"));
     }
 
+    @Deprecated
     public void moveForwardCentimeters(double distance, double speed, State runOnStop) {
         double startingEncoder = wheelController.avgEncoder();
         stateMachine.addState(new State(() -> {
@@ -61,6 +116,7 @@ public abstract class AutonomousLibrary extends Configurator {
         }, "autoLibMoveForwardCm"));
     }
 
+    @Deprecated
     public void moveRightCentimeters(double distance, double speed, State runOnStop) {
         double startingEncoder = wheelController.rightEncoder();
         stateMachine.addState(new State(() -> {

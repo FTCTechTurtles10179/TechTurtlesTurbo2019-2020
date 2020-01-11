@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.lib.AutonomousLibrary;
 import org.firstinspires.ftc.teamcode.lib.util.states.SingleState;
-import org.firstinspires.ftc.teamcode.lib.util.states.StartState;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 @Autonomous(name="NearBlueSquareStackless")
