@@ -18,7 +18,7 @@
   Boston, MA  02111-1307  USA
  */
 
-package org.firstinspires.ftc.teamcode.lib.util.processingLibs;
+package org.firstinspires.ftc.teamcode.lib.util.data;
 
 import java.io.Serializable;
 

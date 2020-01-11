@@ -47,11 +47,6 @@ public class NearRedTriangle extends AutonomousLibrary {
             moveRightCentimeters(-40.5, -0.5, moveForwardToPlatform);
         }, () -> true, () -> {}, "StrafeAlign");
 
-        stateMachine.addState(new State(() -> {
-            telemetry.addData("Thingy", !getMotorsMoving());
-            return false;
-        }, () -> {}));
-
         State moveOffWall = new StartState(() -> {
             moveForwardCentimeters(-8, -0.5, strafeAlign);
         }, () -> true, () -> {}, "MoveForwardToPlatform");

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib.util.pipelines;
 
-import org.firstinspires.ftc.teamcode.lib.util.processingLibs.PVector;
+import org.firstinspires.ftc.teamcode.lib.util.data.PVector;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;

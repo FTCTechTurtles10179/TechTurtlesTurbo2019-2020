@@ -7,6 +7,15 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 public class WheelController { //This class can be changed for each drive train without breaking our library
+    //The configurator that this WheelController is attached to
+    Configurator config;
+
+    //Variables for fault detection
+    private int oldFrontLeftEncoder = 0;
+    private int oldFrontRightEncoder = 0;
+    private int oldBackLeftEncoder = 0;
+    private int oldBackRightEncoder = 0;
+    private boolean faultOccured = false;
 
     //Define the four wheels since we are using a mecanum drive train
     public DcMotor frontLeft;
@@ -114,7 +123,40 @@ public class WheelController { //This class can be changed for each drive train 
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void detectMotorFault() {
+        if (faultOccured) config.telemetry.addLine("A motor fault occurred!");
+
+        //Check if the front left motor is powered but the encoder is not moving
+        if (frontLeft.getPower() != 0 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {
+            //If so, there is an encoder issue so we disable encoders
+            faultOccured = true;
+            frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        //Do the same for the other motors
+        if (frontRight.getPower() != 0 && oldFrontRightEncoder == frontRight.getCurrentPosition()) {
+            faultOccured = true;
+            frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        if (backLeft.getPower() != 0 && oldBackLeftEncoder == backLeft.getCurrentPosition()) {
+            faultOccured = true;
+            backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        if (backRight.getPower() != 0 && oldBackRightEncoder == backRight.getCurrentPosition()) {
+            faultOccured = true;
+            backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        //Update all of the "old" values
+        oldFrontLeftEncoder = frontLeft.getCurrentPosition();
+        oldFrontRightEncoder = frontRight.getCurrentPosition();
+        oldBackLeftEncoder = backLeft.getCurrentPosition();
+        oldBackRightEncoder = backRight.getCurrentPosition();
+    }
+
     public WheelController(Configurator config) {
+        //Save the configurator for later.
+        this.config = config;
+
         //Setup all the motors to what config says they are
         frontLeft = config.frontLeft;
         frontRight = config.frontRight;
