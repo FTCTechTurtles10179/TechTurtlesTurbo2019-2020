@@ -57,12 +57,12 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         if (config.getDebugMode()) config.telemetry.addLine("LocalRot: " + localRobotRot);
 
         //Convert to "field" coordinates
-        localRobotPos = new PVector(-localRobotPos.y, localRobotPos.x);
+        localRobotPos = new PVector(-localRobotPos.y, -localRobotPos.x);
         PVector rotated = localRobotPos.rotate(Math.toRadians(robotRot));
 
         //Add how the robot has moved to it's overall position
         setPos(PVector.add(robotPos, rotated));
-        setRot(robotRot + Math.toDegrees(localRobotRot));
+        setRot(robotRot - Math.toDegrees(localRobotRot));
 
         //Update all of the "old" values
         oldFrontLeftEncoder = config.frontLeft.getCurrentPosition();
