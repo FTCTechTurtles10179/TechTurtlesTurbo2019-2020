@@ -60,10 +60,15 @@ public class State {
             firstRun = false;
             timeStarted = currentTimeMillis(); //Then the current time is when it started
         }
+
         if (debugMode) timeTracker.start();
-        boolean stop = (!firstRun && currentTimeMillis() >= timeStarted + millisToRun) || program.execute(); //True if the state wants to be deactivated or time ran out
+
+        //True if the state wants to be deactivated or time ran out
+        boolean stop = (!firstRun && currentTimeMillis() >= timeStarted + millisToRun) || program.execute();
         if (stop) programOnStop.execute(); //Run what's on stop if we are stopping
+
         if (debugMode) timeTracker.end("execute");
+
         return stop;
     }
 }
