@@ -21,7 +21,7 @@ public class TurtlesTeleOp extends Configurator {
     double slowMode = 1;
     boolean slowModeJustSwapped = false;
     boolean armLimit = true;
-    MecanumOdometer odometer;
+    MecanumOdometer odometer = new MecanumOdometer(this);
 
     @Override
     public void setupOpMode() {
@@ -65,9 +65,7 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.x) foundationGrabber.setPosition(1);
             if (gamepad2.y) foundationGrabber.setPosition(0);
 
-            telemetry.addLine("X: " + odometer.getPos().x + " Y: " + odometer.getPos().y + " Rot: " + odometer.getRot());
-
             return false;
-        }, () -> {}, "teleOp")); //Don't run anything on stop, and name it teleOp
+        }, () -> {}, "TeleOp")); //Don't run anything on stop, and name it TeleOp
     }
 }

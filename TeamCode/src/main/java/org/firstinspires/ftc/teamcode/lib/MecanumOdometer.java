@@ -9,10 +9,10 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     private double robotRot;
 
     //Utility to find how much encoders have changed
-    private int oldFrontLeftEncoder = 0;
-    private int oldFrontRightEncoder = 0;
-    private int oldBackLeftEncoder = 0;
-    private int oldBackRightEncoder = 0;
+    private double oldFrontLeftEncoder = -1;
+    private double oldFrontRightEncoder = -1;
+    private double oldBackLeftEncoder = -1;
+    private double oldBackRightEncoder = -1;
 
     //Configure these to our wheels and wheelbase, measure in centimeters
     private PVector frontLeftWheelPos = new PVector(14.5, 19.0);
@@ -22,12 +22,14 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     double wheelRadius = 4.75;
 
     //Configure this to our motors
-    int ticksToDegrees = 28/360;
+    double ticksToDegrees = 48.0/360.0;
 
-    //K is used for math later
-    double K = Math.abs(frontLeftWheelPos.x) + Math.abs(frontLeftWheelPos.y);
+    //K is used for math later, it is a bit off when directly calculated so it is an adjustable constant
+    final double K = 5.5833;
 
     private void odometryLoop() {
+        if (config.getDebugMode()) config.telemetry.addLine("Odometry active.");
+
         /* The math behind this code: (W for omega)
         If W_n is the rotation change for wheel n, r is the wheel radius, and K is |X of wheel n| + |Y of wheel n|,
         then we can find the robot's velocity V and rotation velocity W_v using
@@ -37,31 +39,39 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         r * (-1/(4K)W_1 - 1/(4K)W_2 + 1/(4K)W_3 + 1/(4K)W_4)   =   W_v
         */
 
-        int frontLeftDegreeChange = (oldFrontLeftEncoder - config.frontLeft.getCurrentPosition()) * ticksToDegrees;
-        int frontRightDegreeChange = (oldFrontRightEncoder - config.frontRight.getCurrentPosition()) * ticksToDegrees;
-        int backLeftDegreeChange = (oldBackLeftEncoder - config.backLeft.getCurrentPosition()) * ticksToDegrees;
-        int backRightDegreeChange = (oldBackRightEncoder - config.backRight.getCurrentPosition()) * ticksToDegrees;
+        double frontLeftDegreeChange = Math.toRadians((oldFrontLeftEncoder - config.frontLeft.getCurrentPosition()) * ticksToDegrees);
+        double frontRightDegreeChange = Math.toRadians((oldFrontRightEncoder - config.frontRight.getCurrentPosition()) * ticksToDegrees);
+        double backLeftDegreeChange = Math.toRadians((oldBackLeftEncoder - config.backLeft.getCurrentPosition()) * ticksToDegrees);
+        double backRightDegreeChange = Math.toRadians((oldBackRightEncoder - config.backRight.getCurrentPosition()) * ticksToDegrees);
 
-        PVector localRobotPos = new PVector(
+        PVector localRobotPos;
+        localRobotPos = new PVector(
                 wheelRadius * (0.25 * (frontLeftDegreeChange + frontRightDegreeChange + backLeftDegreeChange + backRightDegreeChange)),
                 wheelRadius * ((0.25 * (frontRightDegreeChange + backLeftDegreeChange)) - (0.25 * (frontLeftDegreeChange + backLeftDegreeChange)))
         );
 
-        double localRobotRot = wheelRadius * ((1/(4 * K) * (backRightDegreeChange + frontRightDegreeChange)) - (1/(4 * K) * (backLeftDegreeChange + frontLeftDegreeChange)));
+        double localRobotRot;
+        localRobotRot = wheelRadius * ((1/(4.0 * K) * (backRightDegreeChange + frontRightDegreeChange)) - (1/(4.0 * K) * (backLeftDegreeChange + frontLeftDegreeChange)));
+
+        if (config.getDebugMode()) config.telemetry.addLine("LocalPos: (" + localRobotPos.x + ", " + localRobotPos.y + ")");
+        if (config.getDebugMode()) config.telemetry.addLine("LocalRot: " + localRobotRot);
 
         //Convert to "field" coordinates
-        localRobotPos.rotate(robotRot);
         localRobotPos = new PVector(-localRobotPos.y, localRobotPos.x);
+        PVector rotated = localRobotPos.rotate(Math.toRadians(robotRot));
 
-        //Ad how the robot has moved to it's overall position
-        PVector.add(robotPos, localRobotPos);
-        robotRot += localRobotRot;
+        //Add how the robot has moved to it's overall position
+        setPos(PVector.add(robotPos, rotated));
+        setRot(robotRot + Math.toDegrees(localRobotRot));
 
         //Update all of the "old" values
         oldFrontLeftEncoder = config.frontLeft.getCurrentPosition();
         oldFrontRightEncoder = config.frontRight.getCurrentPosition();
         oldBackLeftEncoder = config.backLeft.getCurrentPosition();
         oldBackRightEncoder = config.backRight.getCurrentPosition();
+
+        if (config.getDebugMode()) config.telemetry.addLine("Pos: (" + robotPos.x + ", " + robotPos.y + ")");
+        if (config.getDebugMode()) config.telemetry.addLine("Rot: " + robotRot);
     }
 
     public MecanumOdometer(Configurator config) {
@@ -69,14 +79,18 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     }
 
     public void beginOdometry() {
-        State debugState = State.blank();
+        //Update all of the "old" values
+        oldFrontLeftEncoder = config.frontLeft.getCurrentPosition();
+        oldFrontRightEncoder = config.frontRight.getCurrentPosition();
+        oldBackLeftEncoder = config.backLeft.getCurrentPosition();
+        oldBackRightEncoder = config.backRight.getCurrentPosition();
+
         State odometryState = new State(() -> {
             odometryLoop();
             return false;
         }, () -> {}, "Hidden");
 
         config.stateMachine.addState(odometryState);
-        if (config.getDebugMode()) config.stateMachine.addState(debugState);
     }
 
     public PVector getPos() {
@@ -88,10 +102,12 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     }
 
     public void setPos(PVector pos) {
+        if (config.getDebugMode()) config.telemetry.addLine("Set odometry pos: (" + pos.x + ", " + pos.y + ")");
         robotPos = pos;
     }
 
     public void setRot(double rot) {
+        if (config.getDebugMode()) config.telemetry.addLine("Set odometry rot: " + rot);
         robotRot = rot;
     }
 }
