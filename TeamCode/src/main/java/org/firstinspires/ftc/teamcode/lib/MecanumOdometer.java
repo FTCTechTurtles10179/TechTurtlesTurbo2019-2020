@@ -1,12 +1,27 @@
 package org.firstinspires.ftc.teamcode.lib;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.lib.util.data.PVector;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X is forward! When reading values, +X is right +Y is forward!
     private Configurator config;
+    private BNO055IMU imu;
     private PVector robotPos;
     private double robotRot;
+
+    private long lastImuReadTime = 0;
+    private PVector imuRobotPos;
+    private double imuRobotRot;
+    private double imuRotOffset;
+
+    //How far off encoders must be from IMU to switch to the IMU
+    private double bumpThreshhold = 1;
 
     //Utility to find how much encoders have changed
     private double oldFrontLeftEncoder = -1;
@@ -20,6 +35,7 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     private PVector frontRightWheelPos = new PVector(14.5, -19.0);
     private PVector backRightWheelPos = new PVector(-14.5, -19.0);
     double wheelRadius = 4.75;
+    double strafeEfficiency = 0.9;
 
     //Configure this to our motors
     double ticksToDegrees = 48.0/360.0;
@@ -28,8 +44,6 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     final double K = 5.5833;
 
     private void odometryLoop() {
-        if (config.getDebugMode()) config.telemetry.addLine("Odometry active.");
-
         /* The math behind this code: (W for omega)
         If W_n is the rotation change for wheel n, r is the wheel radius, and K is |X of wheel n| + |Y of wheel n|,
         then we can find the robot's velocity V and rotation velocity W_v using
@@ -57,28 +71,53 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         if (config.getDebugMode()) config.telemetry.addLine("LocalRot: " + localRobotRot);
 
         //Convert to "field" coordinates
-        localRobotPos = new PVector(-localRobotPos.y, -localRobotPos.x);
+        localRobotPos = new PVector(-localRobotPos.y, -localRobotPos.x * strafeEfficiency);
         PVector rotated = localRobotPos.rotate(Math.toRadians(robotRot));
 
         //Add how the robot has moved to it's overall position
         setPos(PVector.add(robotPos, rotated));
-        setRot(robotRot - Math.toDegrees(localRobotRot));
+        double addedRotation = robotRot - Math.toDegrees(localRobotRot);
+        double posClippedRotation = addedRotation > 360 ? addedRotation - 360 : addedRotation;
+        double clippedRotation = posClippedRotation < 0 ? posClippedRotation + 360 : posClippedRotation;
+        setRot(clippedRotation);
 
         //Update all of the "old" values
         oldFrontLeftEncoder = config.frontLeft.getCurrentPosition();
         oldFrontRightEncoder = config.frontRight.getCurrentPosition();
         oldBackLeftEncoder = config.backLeft.getCurrentPosition();
         oldBackRightEncoder = config.backRight.getCurrentPosition();
+    }
+
+    public void imuLoop() { //Multiply velocity by time to get change in position, and use the IMU's compass.
+        Velocity velocity = imu.getVelocity();
+        double timeChange = System.currentTimeMillis() - lastImuReadTime;
+        lastImuReadTime = System.currentTimeMillis();
+        PVector localRobotPos = new PVector(velocity.xVeloc * timeChange, velocity.yVeloc * timeChange, velocity.zVeloc * timeChange);
+
+        imuRobotPos = PVector.add(imuRobotPos, localRobotPos);
+        imuRobotRot = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle - imuRotOffset;
+
+        //Telemetry
+        if (config.getDebugMode()) config.telemetry.addLine("IMUPos: (" + localRobotPos.x + ", " + localRobotPos.y + ")");
 
         if (config.getDebugMode()) config.telemetry.addLine("Pos: (" + robotPos.x + ", " + robotPos.y + ")");
         if (config.getDebugMode()) config.telemetry.addLine("Rot: " + robotRot);
+
+        if (PVector.dist(imuRobotPos, robotPos) > bumpThreshhold) {
+            robotRot = imuRobotRot;
+            robotPos = imuRobotPos;
+        }
     }
 
-    public MecanumOdometer(Configurator config) {
+    public MecanumOdometer(Configurator config) { //Store the config
         this.config = config;
     }
 
     public void beginOdometry() {
+        //Get the imu
+        imu = config.getIMU("imu");
+        imuRotOffset = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle;
+
         //Update all of the "old" values
         oldFrontLeftEncoder = config.frontLeft.getCurrentPosition();
         oldFrontRightEncoder = config.frontRight.getCurrentPosition();
@@ -87,8 +126,9 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
 
         State odometryState = new State(() -> {
             odometryLoop();
+            imuLoop();
             return false;
-        }, () -> {}, "Hidden");
+        }, () -> {}, "Odometry");
 
         config.stateMachine.addState(odometryState);
     }
@@ -102,12 +142,12 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     }
 
     public void setPos(PVector pos) {
-        if (config.getDebugMode()) config.telemetry.addLine("Set odometry pos: (" + pos.x + ", " + pos.y + ")");
         robotPos = pos;
+        imuRobotPos = pos;
     }
 
     public void setRot(double rot) {
-        if (config.getDebugMode()) config.telemetry.addLine("Set odometry rot: " + rot);
         robotRot = rot;
+        imuRotOffset = imuRotOffset + (imuRobotRot - rot);
     }
 }

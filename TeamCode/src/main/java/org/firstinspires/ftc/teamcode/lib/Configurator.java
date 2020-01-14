@@ -14,7 +14,7 @@ public abstract class Configurator extends OpMode{
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    private boolean debugMode = false;
+    private boolean debugMode = true;
 
     public StateMachine stateMachine;
     public WheelController wheelController;
@@ -103,9 +103,11 @@ public abstract class Configurator extends OpMode{
 
     @Override
     public void loop() {
+        telemetry.clearAll();
         if (gamepad1.a && gamepad1.b && gamepad1.x && gamepad1.y) debugMode = true;
         wheelController.detectMotorFault();
         stateMachine.runStates();
+        telemetry.update();
     }
 
     public boolean getDebugMode() {

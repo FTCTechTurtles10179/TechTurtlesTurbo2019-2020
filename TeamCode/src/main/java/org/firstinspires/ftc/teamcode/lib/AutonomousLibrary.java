@@ -11,8 +11,10 @@ public abstract class AutonomousLibrary extends Configurator {
     private double cmToClickForward = 16.5;
     private double cmToClickRight = 24.3;
     private double slowDown = 3;
-    private double slowDist = 5;
-    private double stopDist = 0.5;
+    private double slowDist = 15;
+    private double stopDist = 5;
+    private double fastStopDist = 10;
+    private double speed = 0.3;
 
     ArrayList<PVector> targetPos = new ArrayList<>();
     ArrayList<Double> targetRot = new ArrayList<>();
@@ -27,19 +29,19 @@ public abstract class AutonomousLibrary extends Configurator {
         stateMachine.addState(new State(() -> {
             updateWheelSpeed();
             return false;
-        }, () -> {}, "Hidden"));
+        }, () -> {}, "AutoLibUpdateWheels"));
     }
 
     private void updateWheelSpeed() {
-        if (targetPos.size() > 1) {
-            PVector motionVector = PVector.sub(odometry.getPos(), targetPos.get(0)).setMag(1);
-            double turn = Range.clip((odometry.getRot() - targetRot.get(0)), -1, 1);
-            wheelController.moveXYTurn(motionVector.x, motionVector.y, turn);
-        } else if (targetPos.size() > 0) {
-            PVector motionVector = PVector.sub(odometry.getPos(), targetPos.get(0)).setMag(Range.clip(PVector.sub(odometry.getPos(), targetPos.get(0)).mag()/slowDist, -1, 1));
-            double turn = Range.clip((odometry.getRot() - targetRot.get(0))/slowDist, -1, 1);
-            wheelController.moveXYTurn(motionVector.x, motionVector.y, turn);
-        }
+        PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
+        double moveSpeed = fieldMotion.mag() > slowDist ? speed : (fieldMotion.mag()/slowDist) * speed;
+        PVector botMotion = fieldMotion.normalize().rotate(-odometry.getRot()).mult(moveSpeed);
+
+        double fieldTurn = targetRot.get(0) - odometry.getRot();
+        double turnSpeed = fieldTurn > slowDist ? speed : (fieldTurn/slowDist) * speed;
+        double botTurn = Range.clip(fieldTurn, -turnSpeed, turnSpeed);
+
+        wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
 
         if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && Math.abs(odometry.getRot() - targetRot.get(0)) < stopDist) {
             if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));

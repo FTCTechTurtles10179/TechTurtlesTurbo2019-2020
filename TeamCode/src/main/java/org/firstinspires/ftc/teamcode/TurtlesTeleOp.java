@@ -65,6 +65,11 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.x) foundationGrabber.setPosition(1);
             if (gamepad2.y) foundationGrabber.setPosition(0);
 
+            if (gamepad1.right_trigger > 0.5) {
+                odometer.setRot(0);
+                odometer.setPos(new PVector(0, 0));
+            }
+
             return false;
         }, () -> {}, "TeleOp")); //Don't run anything on stop, and name it TeleOp
     }
