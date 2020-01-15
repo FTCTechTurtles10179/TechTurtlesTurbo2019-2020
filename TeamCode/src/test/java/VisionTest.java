@@ -45,10 +45,7 @@ public class VisionTest {
 
     @Before
     public void initialize() {
-        String filePath = IMAGE_READ_PATH + "iphone7_27inches_by_2.5_up_inches_left.jpg";
-        input = Imgcodecs.imread(filePath);
-
-        input = cropAndResize(input,640,480);
+        input = loadMatFromBGR(IMAGE_READ_PATH + "iphone7_27inches_by_2.5_up_inches_left.jpg");
     }
 
     @Test
@@ -61,7 +58,7 @@ public class VisionTest {
     @Test
     public void imageWrite() {
         String writePath = IMAGE_WRITE_PATH + "outputTestImage.jpg";
-        Imgcodecs.imwrite(writePath, input);
+        saveMatAsRGB(writePath, input);
         File outputFile = new File(writePath);
         assertThat(outputFile.exists()).isTrue();
     }
@@ -71,7 +68,7 @@ public class VisionTest {
         SkystoneFinder finder = new SkystoneFinder();
         Mat output = finder.processFrame(input);
         String writePath = IMAGE_WRITE_PATH + "skystoneDetectorOutput.jpg";
-        Imgcodecs.imwrite(writePath, output);
+        saveMatAsRGB(writePath, output);
     }
 
     @Test
@@ -103,9 +100,9 @@ public class VisionTest {
                 new Scalar(0, 255, 0), 3);
 
 
-        Imgcodecs.imwrite(IMAGE_WRITE_PATH + "yCbCr.jpg", yCbCrChan2Mat);
-        Imgcodecs.imwrite(IMAGE_WRITE_PATH + "threshold.jpg", thresholdMat);
-        Imgcodecs.imwrite(IMAGE_WRITE_PATH + "all.jpg", all);
+        saveMatAsRGB(IMAGE_WRITE_PATH + "yCbCr.jpg", yCbCrChan2Mat);
+        saveMatAsRGB(IMAGE_WRITE_PATH + "threshold.jpg", thresholdMat);
+        saveMatAsRGB(IMAGE_WRITE_PATH + "all.jpg", all);
     }
 
 
@@ -140,6 +137,25 @@ public class VisionTest {
         OpenCvPipeline pipeline = new TestPipeline();
         Mat output = new Mat();
         output = pipeline.processFrame(input);
-        Imgcodecs.imwrite(IMAGE_WRITE_PATH + "pipline.jpg", output);
+        saveMatAsRGB(IMAGE_WRITE_PATH + "pipline.jpg", output);
+    }
+
+
+    private Mat loadMatFromBGR(String filePath) {
+        Mat loadedMat = Imgcodecs.imread(filePath);
+        loadedMat = cropAndResize(loadedMat,640,480);
+        Imgproc.cvtColor(loadedMat, loadedMat, Imgproc.COLOR_RGB2BGR); //converts rgb to bgr
+        return loadedMat;
+    }
+
+
+    private void saveMatAsRGB(String filePath, Mat output) {
+        File file = new File(filePath);
+        File directory = new File(file.getParent());
+        if(!directory.exists()) {
+            directory.mkdir();
+        }
+        Imgproc.cvtColor(output, output, Imgproc.COLOR_BGR2RGB);
+        Imgcodecs.imwrite(file.getPath(), output);
     }
 }
