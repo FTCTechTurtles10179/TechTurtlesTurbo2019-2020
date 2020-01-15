@@ -26,10 +26,10 @@ public class NearRedSquare extends AutonomousLibrary {
         armMotor = getDcMotor("armMotor");//Get the armMotor
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//Set encoder value of armMotor to 0
+        armMotor.setTargetPosition(armDownEncoder);//Lower arm
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         claw.setPosition(0);//Open claw
-        armMotor.setTargetPosition(armDownEncoder);//Lower arm
 
         //Initialize starting position and rotation
         PVector startingPos = new PVector(0,0);

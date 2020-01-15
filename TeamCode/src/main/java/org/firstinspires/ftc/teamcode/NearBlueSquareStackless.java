@@ -26,14 +26,14 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
 
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//Set encoder value of armMotor to 0
+        armMotor.setTargetPosition(armDownEncoder);//Lower arm
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         claw.setPosition(0);//Open claw
-        armMotor.setTargetPosition(armDownEncoder);//Lower arm
 
         //Initialize starting position and rotation
         PVector startingPos = new PVector(0,0);
-        initializeOdometry(startingPos,90);
+        initializeOdometry(startingPos,-90);
 
         //Set waypoints
         PVector stone = new PVector(-75,7);
