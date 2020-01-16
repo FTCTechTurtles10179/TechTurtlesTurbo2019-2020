@@ -14,7 +14,7 @@ public abstract class Configurator extends OpMode{
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    private boolean debugMode = true;
+    private boolean debugMode = false;
 
     public StateMachine stateMachine;
     public WheelController wheelController;
