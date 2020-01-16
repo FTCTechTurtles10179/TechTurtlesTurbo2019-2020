@@ -32,13 +32,13 @@ public class NearRedSquare extends AutonomousLibrary {
         claw.setPosition(0);//Open claw
 
         //Initialize starting position and rotation
-        PVector startingPos = new PVector(0,0);
+        PVector startingPos = new PVector(0,60.96);
         initializeOdometry(startingPos,-90);
 
         //Set waypoints
-        PVector stone = new PVector(75,7);
-        PVector backFromStones = new PVector(55,7);
-        PVector foundation = new PVector(75,169);
+        PVector stone = new PVector(76.2,68.58);
+        PVector backFromStones = new PVector(73.2,68.58);
+        PVector foundation = new PVector(76.2,246.58);
         PVector underSkybridge = new PVector(55, 122);
 
         State strafeRightUnderSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeRightUnderSkybridge
