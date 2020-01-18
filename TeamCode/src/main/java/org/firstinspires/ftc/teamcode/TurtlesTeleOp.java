@@ -70,6 +70,16 @@ public class TurtlesTeleOp extends Configurator {
                 odometer.setPos(new PVector(0, 0));
             }
 
+            if (gamepad1.x) {
+                if (odometer.getRot() > 10) {
+                    wheelController.moveTurn(-0.3);
+                } else {
+                    PVector targetMotion = PVector.sub(new PVector(0, 0, 0), odometer.getPos());
+                    targetMotion.setMag(0.2);
+                    wheelController.moveXY(targetMotion.x, targetMotion.y);
+                }
+            }
+
             return false;
         }, () -> {}, "TeleOp")); //Don't run anything on stop, and name it TeleOp
     }

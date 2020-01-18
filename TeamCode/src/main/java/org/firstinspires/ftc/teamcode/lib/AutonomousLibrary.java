@@ -34,6 +34,7 @@ public abstract class AutonomousLibrary extends Configurator {
 
     private void updateWheelSpeed() {
         PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
+        fieldMotion.y = -fieldMotion.y;
         double moveSpeed = fieldMotion.mag() > slowDist ? speed : (fieldMotion.mag()/slowDist) * speed;
         PVector botMotion = fieldMotion.normalize().rotate(-odometry.getRot()).mult(moveSpeed);
 
@@ -43,7 +44,7 @@ public abstract class AutonomousLibrary extends Configurator {
 
         wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
 
-        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && Math.abs(odometry.getRot() - targetRot.get(0)) < stopDist) {
+        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist) {
             if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
             states.remove(0);
             targetPos.remove(0);

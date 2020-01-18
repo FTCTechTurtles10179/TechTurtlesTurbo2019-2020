@@ -10,6 +10,7 @@ public class StateMachine {
     Configurator config; //Configurator instance that this StateMachine is attached to
 
     StateMachine(Configurator config) {
+        //Save the config & initialize arrays
         this.config = config;
         statesToAdd = new ArrayList();
         states = new ArrayList();
@@ -20,22 +21,25 @@ public class StateMachine {
     }
 
     void runStates() {
+        //Add states before for thread safety
         for (State state: statesToAdd) {
             if (config.getDebugMode()) state.debugMode = true;
             states.add(0, state);
         }
         statesToAdd.clear();
 
+        //Loop through each state
         ArrayList<State> statesToRemove = new ArrayList<>();
         for (int i = 0; i < states.size(); i++) {
-            if (config.getDebugMode() && states.get(i).getStateName() != "Hidden") {
+            if (config.getDebugMode() && states.get(i).getStateName() != "Hidden") { //Show in telemetry unless its hidden
                 config.telemetry.addLine(
                     "State: " + states.get(i).getStateName() + "(" + states.get(i).getAvgRuntime() + "ms)"
                 );
             }
-            if (states.get(i).execute()) statesToRemove.add(states.get(i));
+            if (states.get(i).execute()) statesToRemove.add(states.get(i)); //Run the state and remove if it wants to be
         }
 
+        //Remove states after for thread safety
         for (State state: statesToRemove) {
             states.remove(state);
         }

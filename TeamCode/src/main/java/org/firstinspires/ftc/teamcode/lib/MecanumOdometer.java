@@ -35,13 +35,13 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     private PVector frontRightWheelPos = new PVector(14.5, -19.0);
     private PVector backRightWheelPos = new PVector(-14.5, -19.0);
     double wheelRadius = 4.75;
-    double strafeEfficiency = 0.9;
+    double strafeEfficiency = 2.25;
 
     //Configure this to our motors
-    double ticksToDegrees = 48.0/360.0;
+    double ticksToDegrees = 0.79998;
 
     //K is used for math later, it is a bit off when directly calculated so it is an adjustable constant
-    final double K = 5.5833;
+    final double K = 35.25; //33.4988
 
     private void odometryLoop() {
         /* The math behind this code: (W for omega)
@@ -67,11 +67,11 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         double localRobotRot;
         localRobotRot = wheelRadius * ((1/(4.0 * K) * (backRightDegreeChange + frontRightDegreeChange)) - (1/(4.0 * K) * (backLeftDegreeChange + frontLeftDegreeChange)));
 
-        if (config.getDebugMode()) config.telemetry.addLine("LocalPos: (" + localRobotPos.x + ", " + localRobotPos.y + ")");
-        if (config.getDebugMode()) config.telemetry.addLine("LocalRot: " + localRobotRot);
+        if (config.getDebugMode()) config.telemetry.addLine("LocalPos: (" + Math.round(localRobotPos.x) + ", " + Math.round(localRobotPos.y) + ")");
+        if (config.getDebugMode()) config.telemetry.addLine("LocalRot: " + Math.round(localRobotRot));
 
         //Convert to "field" coordinates
-        localRobotPos = new PVector(-localRobotPos.y, -localRobotPos.x * strafeEfficiency);
+        localRobotPos = new PVector(-localRobotPos.y * strafeEfficiency, localRobotPos.x);
         PVector rotated = localRobotPos.rotate(Math.toRadians(robotRot));
 
         //Add how the robot has moved to it's overall position
@@ -98,10 +98,10 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         imuRobotRot = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle - imuRotOffset;
 
         //Telemetry
-        if (config.getDebugMode()) config.telemetry.addLine("IMUPos: (" + localRobotPos.x + ", " + localRobotPos.y + ")");
+        if (config.getDebugMode()) config.telemetry.addLine("IMUPos: (" + Math.round(localRobotPos.x) + ", " + Math.round(localRobotPos.y) + ")");
 
-        if (config.getDebugMode()) config.telemetry.addLine("Pos: (" + robotPos.x + ", " + robotPos.y + ")");
-        if (config.getDebugMode()) config.telemetry.addLine("Rot: " + robotRot);
+        if (config.getDebugMode()) config.telemetry.addLine("Pos: (" + Math.round(robotPos.x) + ", " + Math.round(robotPos.y) + ")");
+        if (config.getDebugMode()) config.telemetry.addLine("Rot: " + Math.round(robotRot));
 
         if (PVector.dist(imuRobotPos, robotPos) > bumpThreshhold) {
             robotRot = imuRobotRot;
@@ -124,6 +124,7 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         oldBackLeftEncoder = config.backLeft.getCurrentPosition();
         oldBackRightEncoder = config.backRight.getCurrentPosition();
 
+        //Ad a state tu run odometry functions every tick
         State odometryState = new State(() -> {
             odometryLoop();
             imuLoop();
