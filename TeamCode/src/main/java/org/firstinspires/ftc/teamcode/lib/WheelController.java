@@ -47,10 +47,10 @@ public class WheelController { //This class can be changed for each drive train 
 
     public void moveXY(double tx, double ty) { //Take in translateX and translateY
         //Start with how fast we are moving forward
-        double frontLeftSpd = ty;
-        double frontRightSpd = ty;
-        double backLeftSpd = ty;
-        double backRightSpd = ty;
+        double frontLeftSpd = -ty;
+        double frontRightSpd = -ty;
+        double backLeftSpd = -ty;
+        double backRightSpd = -ty;
 
         //Add the strafing values
         frontLeftSpd -= tx;
@@ -81,10 +81,10 @@ public class WheelController { //This class can be changed for each drive train 
 
     public void moveXYTurn(double tx, double ty, double tspeed) {
         //Start with how fast we are moving forward
-        double frontLeftSpd = ty;
-        double frontRightSpd = ty;
-        double backLeftSpd = ty;
-        double backRightSpd = ty;
+        double frontLeftSpd = -ty;
+        double frontRightSpd = -ty;
+        double backLeftSpd = -ty;
+        double backRightSpd = -ty;
 
         //Add the strafing values
         frontLeftSpd -= tx;
