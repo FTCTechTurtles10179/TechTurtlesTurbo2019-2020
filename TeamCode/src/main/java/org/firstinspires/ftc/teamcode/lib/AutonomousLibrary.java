@@ -38,7 +38,7 @@ public abstract class AutonomousLibrary extends Configurator {
         PVector botMotion = fieldMotion.normalize().rotate(-odometry.getRot()).mult(moveSpeed);
 
         double fieldTurn = targetRot.get(0) - odometry.getRot();
-        double turnSpeed = fieldTurn > slowDist ? speed : (fieldTurn/slowDist) * speed;
+        double turnSpeed = Math.abs(fieldTurn) > slowDist ? speed : (fieldTurn/slowDist) * speed;
         double botTurn = Range.clip(fieldTurn, -turnSpeed, turnSpeed);
 
         wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
