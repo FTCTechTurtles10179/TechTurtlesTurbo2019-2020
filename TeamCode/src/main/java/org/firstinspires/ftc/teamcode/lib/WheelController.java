@@ -127,21 +127,21 @@ public class WheelController { //This class can be changed for each drive train 
         if (faultOccured) config.telemetry.addLine("A motor fault occurred!");
 
         //Check if the front left motor is powered but the encoder is not moving
-        if (frontLeft.getPower() != 0 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {
+        if (Math.abs(frontLeft.getPower()) > 0.2 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {
             //If so, there is an encoder issue so we disable encoders
             faultOccured = true;
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         //Do the same for the other motors
-        if (frontRight.getPower() != 0 && oldFrontRightEncoder == frontRight.getCurrentPosition()) {
+        if (Math.abs(frontRight.getPower()) > 0.2 && oldFrontRightEncoder == frontRight.getCurrentPosition()) {
             faultOccured = true;
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        if (backLeft.getPower() != 0 && oldBackLeftEncoder == backLeft.getCurrentPosition()) {
+        if (Math.abs(backLeft.getPower()) > 0.2 && oldBackLeftEncoder == backLeft.getCurrentPosition()) {
             faultOccured = true;
             backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        if (backRight.getPower() != 0 && oldBackRightEncoder == backRight.getCurrentPosition()) {
+        if (Math.abs(backRight.getPower()) > 0.2 && oldBackRightEncoder == backRight.getCurrentPosition()) {
             faultOccured = true;
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
