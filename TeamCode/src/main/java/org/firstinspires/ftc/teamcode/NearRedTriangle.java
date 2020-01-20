@@ -20,8 +20,7 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
         initializeOdometry(new PVector(346.76, 265.76), 90);
 
         State strafeToBridge = new StartState(() -> {
-            setTargetXYRot(new PVector(344.76, 230), 90);
-            setTargetXYRot(new PVector(336.76, 175.5), 90);
+            setTargetXYRot(new PVector(340.76, 175.5), 90);
         }, () -> true, () -> {}, "StrafeRightToBridge");
 
         State releasePlatform = new State(() -> {
@@ -32,7 +31,7 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
         }, 1000, "ReleasePlatform");
 
         State pullBackFoundation = new StartState(() -> {
-            setTargetXYRot(new PVector(344.76, 265.76), 90, releasePlatform);
+            setTargetXYRot(new PVector(340.76, 265.76), 90, releasePlatform);
         }, () -> true, () -> {},"MoveBackwardFromPlatform");
 
         State grabPlatform = new State(() -> {
@@ -43,7 +42,6 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
         }, 1000, "GrabPlatform");
 
         State moveToPlatform = new StartState(() -> {
-            setTargetXYRot(new PVector(336.76, 265.76), 90);
             setTargetXYRot(new PVector(216.76, 212.76), 90, grabPlatform);
         }, () -> true, () -> {}, "MoveForwardToPlatform");
 
