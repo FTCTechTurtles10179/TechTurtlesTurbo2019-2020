@@ -100,9 +100,6 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         //Telemetry
         if (config.getDebugMode()) config.telemetry.addLine("IMUPos: (" + Math.round(localRobotPos.x) + ", " + Math.round(localRobotPos.y) + ")");
 
-        if (config.getDebugMode()) config.telemetry.addLine("Pos: (" + Math.round(robotPos.x) + ", " + Math.round(robotPos.y) + ")");
-        if (config.getDebugMode()) config.telemetry.addLine("Rot: " + Math.round(robotRot));
-
         if (PVector.dist(imuRobotPos, robotPos) > bumpThreshhold) {
             robotRot = imuRobotRot;
             robotPos = imuRobotPos;
@@ -126,8 +123,13 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
 
         //Ad a state tu run odometry functions every tick
         State odometryState = new State(() -> {
+            //Run both odometry loops
             odometryLoop();
-            imuLoop();
+            //imuLoop();
+
+            //Telemetry
+            if (config.getDebugMode()) config.telemetry.addLine("Pos: (" + Math.round(robotPos.x) + ", " + Math.round(robotPos.y) + ")");
+            if (config.getDebugMode()) config.telemetry.addLine("Rot: " + Math.round(robotRot));
             return false;
         }, () -> {}, "Odometry");
 
