@@ -12,8 +12,8 @@ public abstract class AutonomousLibrary extends Configurator {
     private double cmToClickRight = 24.3;
     private double slowDown = 3;
     private double slowDist = 15;
-    private double stopDist = 5;
-    private double fastStopDist = 10;
+    private double stopDist = 1;
+    private double turnSpeed = 0.1;
     private double speed = 0.3;
 
     ArrayList<PVector> targetPos = new ArrayList<>();
@@ -33,17 +33,30 @@ public abstract class AutonomousLibrary extends Configurator {
     }
 
     private void updateWheelSpeed() {
+//        PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
+//        double moveSpeed = fieldMotion.mag() > slowDist ? speed : (fieldMotion.mag()/slowDist) * speed;
+//        PVector botMotion = fieldMotion.normalize().rotate(Math.toRadians(odometry.getRot())).mult(moveSpeed);
+//
+//        double fieldTurn = odometry.getRot() - targetRot.get(0);
+//        double turnSpeed = Math.abs(fieldTurn) > slowDist ? speed : (fieldTurn/slowDist) * speed;
+//        double botTurn = Range.clip(fieldTurn, -turnSpeed, turnSpeed);
+
         PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
-        double moveSpeed = fieldMotion.mag() > slowDist ? speed : (fieldMotion.mag()/slowDist) * speed;
-        PVector botMotion = fieldMotion.normalize().rotate(Math.toRadians(odometry.getRot())).mult(moveSpeed);
+        double botSpeed = Range.clip(fieldMotion.mag() / (slowDist * speed), -speed, speed);
+        PVector botMotion = fieldMotion.setMag(botSpeed).rotate(Math.toRadians(odometry.getRot()));
 
-        double fieldTurn = odometry.getRot() - targetRot.get(0);
-        double turnSpeed = Math.abs(fieldTurn) > slowDist ? speed : (fieldTurn/slowDist) * speed;
-        double botTurn = Range.clip(fieldTurn, -turnSpeed, turnSpeed);
+        double botTurn;
+        if (leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
+            botTurn = 0;
+        } else if (leastDirection(odometry.getRot(), targetRot.get(0))) {
+            botTurn = turnSpeed;
+        } else {
+            botTurn = -turnSpeed;
+        }
 
-        wheelController.moveXY/*Turn*/(botMotion.x, botMotion.y/*, botTurn*/);
+        wheelController.moveXYTurn(botMotion.x, -botMotion.y, botTurn);
 
-        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist) {
+        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
             if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
             states.remove(0);
             targetPos.remove(0);
@@ -135,5 +148,49 @@ public abstract class AutonomousLibrary extends Configurator {
             wheelController.stopWheels();
             stateMachine.addState(runOnStop);
         }, "autoLibMoveRightCm"));
+    }
+
+    private boolean leastDirection(double degFrom, double degTo) { // false is left true is right
+        if (degFrom == degTo) return true;
+
+        double directDistance = Math.abs(degFrom - degTo);
+        double aroundDistance;
+
+        if (degFrom > degTo) {
+            aroundDistance = degTo + (360 - degFrom);
+
+            if (aroundDistance > directDistance) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            aroundDistance = degFrom + (360 - degTo);
+
+            if (aroundDistance > directDistance) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private double leastDist(double degFrom, double degTo) {
+        if (degFrom == degTo) return 0;
+
+        double directDistance = Math.abs(degFrom - degTo);
+        double aroundDistance;
+
+        if (degFrom > degTo) {
+            aroundDistance = degTo + (360 - degFrom);
+        } else {
+            aroundDistance = degFrom + (360 - degTo);
+        }
+
+        if (aroundDistance > directDistance) {
+            return directDistance;
+        } else {
+            return aroundDistance;
+        }
     }
 }
