@@ -33,36 +33,28 @@ public abstract class AutonomousLibrary extends Configurator {
     }
 
     private void updateWheelSpeed() {
-//        PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
-//        double moveSpeed = fieldMotion.mag() > slowDist ? speed : (fieldMotion.mag()/slowDist) * speed;
-//        PVector botMotion = fieldMotion.normalize().rotate(Math.toRadians(odometry.getRot())).mult(moveSpeed);
-//
-//        double fieldTurn = odometry.getRot() - targetRot.get(0);
-//        double turnSpeed = Math.abs(fieldTurn) > slowDist ? speed : (fieldTurn/slowDist) * speed;
-//        double botTurn = Range.clip(fieldTurn, -turnSpeed, turnSpeed);
+        PVector botMotion = new PVector(0,0);
 
-        PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
-        double botSpeed = Range.clip(fieldMotion.mag() / (slowDist * speed), -speed, speed);
-        PVector botMotion = fieldMotion.setMag(botSpeed);//.rotate(Math.toRadians(odometry.getRot()));
+        if (odometry.getPos().x < targetPos.get(0).x) {
+            botMotion.x = 1;
+        } else {
+            botMotion.x = -1;
+        }
 
-        double botTurn = 0;
-//        double botTurn;
-//        if (leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
-//            botTurn = 0;
-//        } else if (leastDirection(odometry.getRot(), targetRot.get(0))) {
-//            botTurn = turnSpeed;
-//        } else {
-//            botTurn = -turnSpeed;
-//        }
+        if (odometry.getPos().y < targetPos.get(0).y) {
+            botMotion.y = 1;
+        } else {
+            botMotion.y = -1;
+        }
 
-        wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
-//
-//        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
-//            if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
-//            states.remove(0);
-//            targetPos.remove(0);
-//            targetRot.remove(0);
-//        }
+        wheelController.moveXYTurn(botMotion.x, botMotion.y, 0);
+
+        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist/* && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist*/) {
+            if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
+            states.remove(0);
+            targetPos.remove(0);
+            targetRot.remove(0);
+        }
 
         if (getDebugMode()) telemetry.addLine("Target: (" + targetPos.get(0).x + ", " + targetPos.get(0).y + ") " + targetRot.get(0) + "°");
     }
@@ -77,80 +69,6 @@ public abstract class AutonomousLibrary extends Configurator {
         targetPos.add(pos);
         targetRot.add(rot);
         states.add(onFinished);
-    }
-
-    @Deprecated
-    public void moveForwardCentimeters(double distance, double speed) {
-        double startingEncoder = wheelController.avgEncoder();
-        stateMachine.addState(new State(() -> {
-            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
-            if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
-                wheelController.moveXY(0, speed);
-            } else {
-                wheelController.moveXY(0, speed / slowDown);
-            }
-            boolean stop = (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) <= stopDist * cmToClickForward);
-            if (getDebugMode()) telemetry.addData("AutoLibStopWheels", stop);
-            return stop;
-        }, () -> {
-            wheelController.stopWheels();
-        }, "autoLibMoveForwardCm"));
-    }
-
-    @Deprecated
-    public void moveRightCentimeters(double distance, double speed) {
-        double startingEncoder = wheelController.rightEncoder();
-        stateMachine.addState(new State(() -> {
-            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
-            if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
-                wheelController.moveXY(speed, 0);
-            } else {
-                wheelController.moveXY(speed / slowDown, 0);
-            }
-            boolean stop = (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) <= stopDist * cmToClickRight);
-            if (getDebugMode()) telemetry.addData("AutoLibStopWheels", stop);
-            return stop;
-        }, () -> {
-            wheelController.stopWheels();
-        }, "autoLibMoveRightCm"));
-    }
-
-    @Deprecated
-    public void moveForwardCentimeters(double distance, double speed, State runOnStop) {
-        double startingEncoder = wheelController.avgEncoder();
-        stateMachine.addState(new State(() -> {
-            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(wheelController.leftEncoder())) / turnDamping;
-            if (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) >= slowDist * cmToClickForward) {
-                wheelController.moveXY(0, speed);
-            } else {
-                wheelController.moveXY(0, speed / slowDown);
-            }
-            boolean stop = (Math.abs((wheelController.avgEncoder() - startingEncoder) - (distance * cmToClickForward)) <= stopDist * cmToClickForward);
-            if (getDebugMode()) telemetry.addData("AutoLibStopWheels", stop);
-            return stop;
-        }, () -> {
-            wheelController.stopWheels();
-            stateMachine.addState(runOnStop);
-        }, "autoLibMoveForwardCm"));
-    }
-
-    @Deprecated
-    public void moveRightCentimeters(double distance, double speed, State runOnStop) {
-        double startingEncoder = wheelController.rightEncoder();
-        stateMachine.addState(new State(() -> {
-            double turnAdjust = 0;//(Math.abs(wheelController.rightEncoder()) - Math.abs(backRight.getCurrentPosition())) / turnDamping;
-            if (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) >= slowDist * cmToClickRight) {
-                wheelController.moveXY(speed, 0);
-            } else {
-                wheelController.moveXY(speed / slowDown, 0);
-            }
-            boolean stop = (Math.abs((wheelController.rightEncoder() - startingEncoder) - (distance * cmToClickRight)) <= stopDist * cmToClickRight);
-            if (getDebugMode()) telemetry.addData("AutoLibStopWheels", stop);
-            return stop;
-        }, () -> {
-            wheelController.stopWheels();
-            stateMachine.addState(runOnStop);
-        }, "autoLibMoveRightCm"));
     }
 
     private boolean leastDirection(double degFrom, double degTo) { // false is left true is right
