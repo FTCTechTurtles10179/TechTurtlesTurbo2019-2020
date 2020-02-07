@@ -16,7 +16,9 @@ import org.firstinspires.ftc.teamcode.lib.util.states.State;
 public class TurtlesTeleOp extends Configurator {
     DcMotor armMotor;
     Servo claw;
+    Servo claw2;
     Servo foundationGrabber;
+    Servo foundationGrabber2;
     TouchSensor armToucher;
     double slowMode = 1;
     boolean slowModeJustSwapped = false;
@@ -27,8 +29,11 @@ public class TurtlesTeleOp extends Configurator {
     public void setupOpMode() {
         armMotor = getDcMotor("armMotor");
         claw = getServo("claw");
+        claw2 = getServo("claw2");
         foundationGrabber = getServo("foundationGrabber");
         foundationGrabber.setPosition(1);
+        foundationGrabber2 = getServo("foundationGrabber2");
+        foundationGrabber2.setPosition(0);
         armToucher = getTouchSensor("armToucher");
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -60,10 +65,23 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.left_bumper) armLimit = false;
             if (gamepad2.right_bumper) armLimit = true;
 
-            if (gamepad2.a) claw.setPosition(0);
-            if (gamepad2.b) claw.setPosition(1);
-            if (gamepad2.x) foundationGrabber.setPosition(1);
-            if (gamepad2.y) foundationGrabber.setPosition(0);
+            if (gamepad2.a) {
+                claw.setPosition(0);
+                claw2.setPosition(1);
+            }
+            if (gamepad2.b) {
+                claw.setPosition(1);
+                claw2.setPosition(0);
+            }
+
+            if (gamepad2.x) {
+                foundationGrabber.setPosition(1);
+                foundationGrabber2.setPosition(0);
+            }
+            if (gamepad2.y) {
+                foundationGrabber.setPosition(0);
+                foundationGrabber2.setPosition(1);
+            }
 
             if (gamepad1.right_trigger > 0.5) {
                 odometer.setRot(0);

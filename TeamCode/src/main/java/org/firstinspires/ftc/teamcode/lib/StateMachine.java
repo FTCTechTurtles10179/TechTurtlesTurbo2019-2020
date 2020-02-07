@@ -25,6 +25,7 @@ public class StateMachine {
     void runStates() {
         //Be able to pause the states if we're in debug mode
         if (config.getDebugMode() && config.gamepad1.x && config.gamepad1.y) {
+            config.wheelController.stopWheels();
             if (firstPause) {
                 paused = !paused;
             }

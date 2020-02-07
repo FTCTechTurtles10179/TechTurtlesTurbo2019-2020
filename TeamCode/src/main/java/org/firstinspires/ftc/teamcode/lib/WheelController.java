@@ -124,7 +124,7 @@ public class WheelController { //This class can be changed for each drive train 
     }
 
     public void detectMotorFault() {
-        if (faultOccured) config.telemetry.addLine("A motor fault occurred!");
+        if (faultOccured && !config.stateMachine.paused) config.telemetry.addLine("A motor fault occurred!");
 
         //Check if the front left motor is powered but the encoder is not moving
         if (Math.abs(frontLeft.getPower()) > 0.2 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {

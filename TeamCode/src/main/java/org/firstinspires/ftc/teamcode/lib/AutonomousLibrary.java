@@ -43,25 +43,28 @@ public abstract class AutonomousLibrary extends Configurator {
 
         PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
         double botSpeed = Range.clip(fieldMotion.mag() / (slowDist * speed), -speed, speed);
-        PVector botMotion = fieldMotion.setMag(botSpeed).rotate(Math.toRadians(odometry.getRot()));
+        PVector botMotion = fieldMotion.setMag(botSpeed);//.rotate(Math.toRadians(odometry.getRot()));
 
-        double botTurn;
-        if (leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
-            botTurn = 0;
-        } else if (leastDirection(odometry.getRot(), targetRot.get(0))) {
-            botTurn = turnSpeed;
-        } else {
-            botTurn = -turnSpeed;
-        }
+        double botTurn = 0;
+//        double botTurn;
+//        if (leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
+//            botTurn = 0;
+//        } else if (leastDirection(odometry.getRot(), targetRot.get(0))) {
+//            botTurn = turnSpeed;
+//        } else {
+//            botTurn = -turnSpeed;
+//        }
 
-        wheelController.moveXYTurn(botMotion.x, -botMotion.y, botTurn);
+        wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
+//
+//        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
+//            if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
+//            states.remove(0);
+//            targetPos.remove(0);
+//            targetRot.remove(0);
+//        }
 
-        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
-            if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
-            states.remove(0);
-            targetPos.remove(0);
-            targetRot.remove(0);
-        }
+        if (getDebugMode()) telemetry.addLine("Target: (" + targetPos.get(0).x + ", " + targetPos.get(0).y + ") " + targetRot.get(0) + "°");
     }
 
     public void setTargetXYRot(PVector pos, double rot) {
