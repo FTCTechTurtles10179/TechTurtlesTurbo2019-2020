@@ -64,12 +64,12 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.right_bumper) armLimit = true;
 
             if (gamepad2.a) {
-                claw.setPosition(0);
-                claw2.setPosition(1);
-            }
-            if (gamepad2.b) {
                 claw.setPosition(1);
                 claw2.setPosition(0);
+            }
+            if (gamepad2.b) {
+                claw.setPosition(0);
+                claw2.setPosition(1);
             }
 
             if (gamepad2.x) {
