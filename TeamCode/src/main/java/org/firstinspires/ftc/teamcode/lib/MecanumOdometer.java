@@ -36,6 +36,7 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
     private PVector backRightWheelPos = new PVector(-14.5, -19.0);
     double wheelRadius = 4.75;
     double strafeEfficiency = 2.25;
+    double forwardEfficiency = 1.035;
 
     //Configure this to our motors
     double ticksToDegrees = 0.79998;
@@ -71,7 +72,7 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         if (config.getDebugMode()) config.telemetry.addLine("LocalRot: " + Math.round(localRobotRot));
 
         //Convert to "field" coordinates
-        localRobotPos = new PVector(-localRobotPos.y * strafeEfficiency, localRobotPos.x);
+        localRobotPos = new PVector(-localRobotPos.y * strafeEfficiency, localRobotPos.x * forwardEfficiency);
         PVector rotated = localRobotPos.rotate(Math.toRadians(robotRot));
 
         //Add how the robot has moved to it's overall position

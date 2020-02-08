@@ -6,6 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.lib.util.debug.TimeTracker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Disabled
 public abstract class Configurator extends OpMode{
@@ -19,11 +25,14 @@ public abstract class Configurator extends OpMode{
     public StateMachine stateMachine;
     public WheelController wheelController;
 
+    ElapsedTime timer = new ElapsedTime();
+    List<Double> avgTime = new ArrayList<>();
+
     public BNO055IMU getIMU(String name) {
         try {
             return hardwareMap.get(BNO055IMU.class, name);
         } catch (Exception e) {
-            telemetry.addLine("WARNING : Could not find IMU \"" + name + "\", please add to config.");
+            telemetry.addLine("CFG: Could not find IMU \"" + name + "\", add to config.");
             try {
                 BNO055IMU imu = hardwareMap.get(BNO055IMU.class, name);
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -46,7 +55,7 @@ public abstract class Configurator extends OpMode{
         try {
             return hardwareMap.dcMotor.get(name);
         } catch (Exception e) {
-            telemetry.addLine("WARNING : Could not find motor \"" + name + "\", please add to config.");
+            telemetry.addLine("CFG: Could not find motor \"" + name + "\", add to config.");
             try {
                 return DcMotor.class.newInstance();
             } catch (Exception ex) {
@@ -59,7 +68,7 @@ public abstract class Configurator extends OpMode{
         try {
             return hardwareMap.servo.get(name);
         } catch (Exception e) {
-            telemetry.addLine("WARNING : Could not find servo \"" + name + "\", please add to config.");
+            telemetry.addLine("CFG: Could not find servo \"" + name + "\", add to config.");
             try {
                 return Servo.class.newInstance();
             } catch (Exception ex) {
@@ -72,7 +81,7 @@ public abstract class Configurator extends OpMode{
         try {
             return hardwareMap.touchSensor.get(name);
         } catch (Exception e) {
-            telemetry.addLine("WARNING : Could not find touchSensor \"" + name + "\", please add to config.");
+            telemetry.addLine("CFG: Could not find touchSensor \"" + name + "\", add to config.");
             try {
                 return TouchSensor.class.newInstance();
             } catch (Exception ex) {
@@ -103,10 +112,23 @@ public abstract class Configurator extends OpMode{
 
     @Override
     public void loop() {
+        if (getDebugMode()) timer.reset();
         telemetry.clearAll();
         if (gamepad1.a && gamepad1.b && gamepad1.x && gamepad1.y) debugMode = true;
         wheelController.detectMotorFault();
         stateMachine.runStates();
+        if (getDebugMode()) {
+            if(avgTime.size() > 50) {
+                avgTime.remove(0);
+            }
+            avgTime.add(timer.seconds());
+            telemetry.addLine("CFG: Runtime was " + Math.round(timer.seconds() * 1000) + "ms");
+            double total = 0;
+            for (double d : avgTime) {
+                total += d;
+            }
+            telemetry.addData("CFG: Avg Runtime was", Math.round(total/avgTime.size() * 1000) + "ms");
+        }
         telemetry.update();
     }
 

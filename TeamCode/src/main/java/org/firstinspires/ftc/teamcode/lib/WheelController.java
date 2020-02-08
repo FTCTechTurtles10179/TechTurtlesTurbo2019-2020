@@ -18,8 +18,12 @@ public class WheelController { //This class can be changed for each drive train 
     private boolean faultOccured = false;
 
     public boolean crispDrive = false; //CrispDrive - Uses encoders to ensure stops
-    private double crispDriveAdjustSpeed = 0.5;
-    private int stopTickCount = 15; //# of ticks of movement will stop crispDrive
+    private double crispDriveAdjustSpeed = 1;
+    private int stopTickCount = 5; //less than this # of ticks of movement will stop crispDrive
+    private int stopFrontLeftEncoder = 0;
+    private int stopFrontRightEncoder = 0;
+    private int stopBackLeftEncoder = 0;
+    private int stopBackRightEncoder = 0;
 
     //Define the four wheels since we are using a mecanum drive train
     public DcMotor frontLeft;

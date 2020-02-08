@@ -12,7 +12,7 @@ public abstract class AutonomousLibrary extends Configurator {
     private double cmToClickRight = 24.3;
     private double slowDown = 3;
     private double slowDist = 15;
-    private double stopDist = 1;
+    private double stopDist = 10;
     private double turnSpeed = 0.1;
     private double speed = 0.3;
 
@@ -33,24 +33,31 @@ public abstract class AutonomousLibrary extends Configurator {
     }
 
     private void updateWheelSpeed() {
-        PVector botMotion = new PVector(0,0);
+//        PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
+//        double moveSpeed = fieldMotion.mag() > slowDist ? speed : (fieldMotion.mag()/slowDist) * speed;
+//        PVector botMotion = fieldMotion.normalize().rotate(Math.toRadians(odometry.getRot())).mult(moveSpeed);
+//
+//        double fieldTurn = odometry.getRot() - targetRot.get(0);
+//        double turnSpeed = Math.abs(fieldTurn) > slowDist ? speed : (fieldTurn/slowDist) * speed;
+//        double botTurn = Range.clip(fieldTurn, -turnSpeed, turnSpeed);
 
-        if (odometry.getPos().x < targetPos.get(0).x) {
-            botMotion.x = 1;
+        PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
+        double botSpeed = Range.clip(fieldMotion.mag() / (slowDist * speed), -speed, speed);
+        PVector botMotion = fieldMotion.setMag(botSpeed).rotate(Math.toRadians(-odometry.getRot()));
+
+        double botTurn;
+        if (leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
+            botTurn = 0;
+        } else if (leastDirection(odometry.getRot(), targetRot.get(0))) {
+            botTurn = turnSpeed;
         } else {
-            botMotion.x = -1;
+            botTurn = -turnSpeed;
         }
 
-        if (odometry.getPos().y < targetPos.get(0).y) {
-            botMotion.y = 1;
-        } else {
-            botMotion.y = -1;
-        }
+        wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
 
-        wheelController.moveXYTurn(botMotion.x, botMotion.y, 0);
-
-        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist/* && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist*/) {
-            if (states.get(0).getStateName() != "Hidden") stateMachine.addState(states.get(0));
+        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
+            if (states.get(0) != null) stateMachine.addState(states.get(0));
             states.remove(0);
             targetPos.remove(0);
             targetRot.remove(0);
@@ -62,7 +69,7 @@ public abstract class AutonomousLibrary extends Configurator {
     public void setTargetXYRot(PVector pos, double rot) {
         targetPos.add(pos);
         targetRot.add(rot);
-        states.add(State.blank());
+        states.add(null);
     }
 
     public void setTargetXYRot(PVector pos, double rot, State onFinished) {

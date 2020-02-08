@@ -27,6 +27,9 @@ public class TurtlesTeleOp extends Configurator {
 
     @Override
     public void setupOpMode() {
+        odometer.setPos(new PVector(0, 0));
+
+        odometer.beginOdometry();
         armMotor = getDcMotor("armMotor");
         claw = getServo("claw");
         claw2 = getServo("claw2");
