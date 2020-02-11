@@ -27,6 +27,9 @@ public class TurtlesTeleOp extends Configurator {
 
     @Override
     public void setupOpMode() {
+        odometer.setPos(new PVector(0, 0));
+
+        odometer.beginOdometry();
         armMotor = getDcMotor("armMotor");
         claw = getServo("claw");
         claw2 = getServo("claw2");
@@ -38,9 +41,7 @@ public class TurtlesTeleOp extends Configurator {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        odometer.setRot(0);
-        odometer.setPos(new PVector(0, 0));
-        odometer.beginOdometry();
+        wheelController.crispDrive = true; //Make the driving crispy
 
         stateMachine.addState(new State(() -> { //Create a new state
             if ((gamepad1.right_bumper || gamepad1.left_bumper) && !slowModeJustSwapped) {
@@ -66,12 +67,12 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.right_bumper) armLimit = true;
 
             if (gamepad2.a) {
-                claw.setPosition(0);
-                claw2.setPosition(1);
-            }
-            if (gamepad2.b) {
                 claw.setPosition(1);
                 claw2.setPosition(0);
+            }
+            if (gamepad2.b) {
+                claw.setPosition(0);
+                claw2.setPosition(1);
             }
 
             if (gamepad2.x) {
@@ -81,21 +82,6 @@ public class TurtlesTeleOp extends Configurator {
             if (gamepad2.y) {
                 foundationGrabber.setPosition(0);
                 foundationGrabber2.setPosition(1);
-            }
-
-            if (gamepad1.right_trigger > 0.5) {
-                odometer.setRot(0);
-                odometer.setPos(new PVector(0, 0));
-            }
-
-            if (gamepad1.x) {
-                if (odometer.getRot() > 10) {
-                    wheelController.moveTurn(-0.3);
-                } else {
-                    PVector targetMotion = PVector.sub(new PVector(0, 0, 0), odometer.getPos());
-                    targetMotion.setMag(0.2);
-                    wheelController.moveXY(targetMotion.x, targetMotion.y);
-                }
             }
 
             return false;

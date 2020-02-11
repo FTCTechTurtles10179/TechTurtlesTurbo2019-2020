@@ -30,7 +30,7 @@ public class TimeTracker {
 
     public TimeLength get(String name) {
         for (TimeLength t : timeLengths) {
-            if (t.label == name) {
+            if (t.label.equals(name)) {
                 return t;
             }
         }

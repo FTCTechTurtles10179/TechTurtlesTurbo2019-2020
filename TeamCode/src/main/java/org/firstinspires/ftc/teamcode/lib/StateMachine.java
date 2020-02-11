@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib;
 
+import org.firstinspires.ftc.teamcode.lib.util.debug.TimeTracker;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
 import java.util.ArrayList;
@@ -14,8 +15,8 @@ public class StateMachine {
     StateMachine(Configurator config) {
         //Save the config & initialize arrays
         this.config = config;
-        statesToAdd = new ArrayList();
-        states = new ArrayList();
+        statesToAdd = new ArrayList<>();
+        states = new ArrayList<>();
     }
 
     public void addState(State state) { //Add a state safely
@@ -45,9 +46,9 @@ public class StateMachine {
             //Loop through each state
             ArrayList<State> statesToRemove = new ArrayList<>();
             for (int i = 0; i < states.size(); i++) {
-                if (config.getDebugMode() && states.get(i).getStateName() != "Hidden") { //Show in telemetry unless its hidden
+                if (config.getDebugMode()/* && states.get(i).getStateName() != "Hidden"*/) { //Show in telemetry unless its hidden
                     config.telemetry.addLine(
-                            "State: " + states.get(i).getStateName() + "(" + states.get(i).getAvgRuntime() + "ms)"
+                            "-- " + states.get(i).getStateName() + "(avg = " + states.get(i).getAvgRuntime() + "ms) --"
                     );
                 }
                 if (states.get(i).execute())

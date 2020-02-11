@@ -17,6 +17,14 @@ public class WheelController { //This class can be changed for each drive train 
     private int oldBackRightEncoder = 0;
     private boolean faultOccured = false;
 
+    public boolean crispDrive = false; //CrispDrive - Uses encoders to ensure stops
+    private int stopTickCount = 2; //less than this # of ticks of movement will be zero power
+    private int maxCrispnessChange = 30; //more than or = to this # of ticks will be full power
+    private int stopFrontLeftEncoder = 0;
+    private int stopFrontRightEncoder = 0;
+    private int stopBackLeftEncoder = 0;
+    private int stopBackRightEncoder = 0;
+
     //Define the four wheels since we are using a mecanum drive train
     public DcMotor frontLeft;
     public DcMotor frontRight;
@@ -127,30 +135,50 @@ public class WheelController { //This class can be changed for each drive train 
         if (faultOccured && !config.stateMachine.paused) config.telemetry.addLine("A motor fault occurred!");
 
         //Check if the front left motor is powered but the encoder is not moving
-        if (Math.abs(frontLeft.getPower()) > 0.2 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {
+        if (Math.abs(frontLeft.getPower()) > 0.9 && oldFrontLeftEncoder == frontLeft.getCurrentPosition()) {
             //If so, there is an encoder issue so we disable encoders
             faultOccured = true;
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         //Do the same for the other motors
-        if (Math.abs(frontRight.getPower()) > 0.2 && oldFrontRightEncoder == frontRight.getCurrentPosition()) {
+        if (Math.abs(frontRight.getPower()) > 0.9 && oldFrontRightEncoder == frontRight.getCurrentPosition()) {
             faultOccured = true;
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        if (Math.abs(backLeft.getPower()) > 0.2 && oldBackLeftEncoder == backLeft.getCurrentPosition()) {
+        if (Math.abs(backLeft.getPower()) > 0.9 && oldBackLeftEncoder == backLeft.getCurrentPosition()) {
             faultOccured = true;
             backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        if (Math.abs(backRight.getPower()) > 0.2 && oldBackRightEncoder == backRight.getCurrentPosition()) {
+        if (Math.abs(backRight.getPower()) > 0.9 && oldBackRightEncoder == backRight.getCurrentPosition()) {
             faultOccured = true;
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+
+        if (crispDrive) crispDriveAdjust();
 
         //Update all of the "old" values
         oldFrontLeftEncoder = frontLeft.getCurrentPosition();
         oldFrontRightEncoder = frontRight.getCurrentPosition();
         oldBackLeftEncoder = backLeft.getCurrentPosition();
         oldBackRightEncoder = backRight.getCurrentPosition();
+    }
+
+    private void crispDriveAdjust() {
+        crispen(frontLeft, oldFrontLeftEncoder);
+        crispen(frontRight, oldFrontRightEncoder);
+        crispen(backLeft, oldBackRightEncoder);
+        crispen(backRight, oldBackRightEncoder);
+    }
+
+    void crispen(DcMotor motor, int lastEncoder) {
+        //Check if unpowered but still moving
+        if (Math.abs(motor.getPower()) < 0.01 && Math.abs(lastEncoder-motor.getCurrentPosition()) >= stopTickCount) {
+            //If so, reverse power!
+            backRight.setPower(Range.clip(
+                (motor.getCurrentPosition() - lastEncoder) / maxCrispnessChange,
+                -1, 1
+            ));
+        }
     }
 
     public WheelController(Configurator config) {
