@@ -18,8 +18,8 @@ public class WheelController { //This class can be changed for each drive train 
     private boolean faultOccured = false;
 
     public boolean crispDrive = false; //CrispDrive - Uses encoders to ensure stops
-    private double crispDriveAdjustSpeed = 1;
-    private int stopTickCount = 5; //less than this # of ticks of movement will stop crispDrive
+    private int stopTickCount = 2; //less than this # of ticks of movement will be zero power
+    private int maxCrispnessChange = 30; //more than or = to this # of ticks will be full power
     private int stopFrontLeftEncoder = 0;
     private int stopFrontRightEncoder = 0;
     private int stopBackLeftEncoder = 0;
@@ -164,39 +164,20 @@ public class WheelController { //This class can be changed for each drive train 
     }
 
     private void crispDriveAdjust() {
-        //Check if the front left motor is stopped but still moving
-        if (Math.abs(frontLeft.getPower()) < 0.01 && Math.abs(oldFrontLeftEncoder-frontLeft.getCurrentPosition()) >= stopTickCount) {
-            //If so, the robot is drivting. Reverse power!
-            if (frontLeft.getCurrentPosition() < oldFrontLeftEncoder) {
-                frontLeft.setPower(crispDriveAdjustSpeed);
-            } else {
-                frontLeft.setPower(-crispDriveAdjustSpeed);
-            }
-        }
-        //Do the same for the other motors
-        if (Math.abs(frontRight.getPower()) < 0.01 && Math.abs(oldFrontRightEncoder-frontRight.getCurrentPosition()) >= stopTickCount) {
-            //If so, the robot is drivting. Reverse power!
-            if (frontRight.getCurrentPosition() < oldFrontRightEncoder) {
-                frontRight.setPower(crispDriveAdjustSpeed);
-            } else {
-                frontRight.setPower(-crispDriveAdjustSpeed);
-            }
-        }
-        if (Math.abs(backLeft.getPower()) < 0.01 && Math.abs(oldBackLeftEncoder-backLeft.getCurrentPosition()) >= stopTickCount) {
-            //If so, the robot is drivting. Reverse power!
-            if (backLeft.getCurrentPosition() < oldBackLeftEncoder) {
-                backLeft.setPower(crispDriveAdjustSpeed);
-            } else {
-                backLeft.setPower(-crispDriveAdjustSpeed);
-            }
-        }
-        if (Math.abs(backRight.getPower()) < 0.01 && Math.abs(oldBackRightEncoder-backRight.getCurrentPosition()) >= stopTickCount) {
-            //If so, the robot is drivting. Reverse power!
-            if (backRight.getCurrentPosition() < oldBackRightEncoder) {
-                backRight.setPower(crispDriveAdjustSpeed);
-            } else {
-                backRight.setPower(-crispDriveAdjustSpeed);
-            }
+        crispen(frontLeft, oldFrontLeftEncoder);
+        crispen(frontRight, oldFrontRightEncoder);
+        crispen(backLeft, oldBackRightEncoder);
+        crispen(backRight, oldBackRightEncoder);
+    }
+
+    void crispen(DcMotor motor, int lastEncoder) {
+        //Check if unpowered but still moving
+        if (Math.abs(motor.getPower()) < 0.01 && Math.abs(lastEncoder-motor.getCurrentPosition()) >= stopTickCount) {
+            //If so, reverse power!
+            backRight.setPower(Range.clip(
+                (motor.getCurrentPosition() - lastEncoder) / maxCrispnessChange,
+                -1, 1
+            ));
         }
     }
 
