@@ -40,30 +40,33 @@ public abstract class AutonomousLibrary extends Configurator {
 //        double fieldTurn = odometry.getRot() - targetRot.get(0);
 //        double turnSpeed = Math.abs(fieldTurn) > slowDist ? speed : (fieldTurn/slowDist) * speed;
 //        double botTurn = Range.clip(fieldTurn, -turnSpeed, turnSpeed);
+        if (states.size() > 0 && targetPos.size() > 0 && targetRot.size() >0) {
+            PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
+            double botSpeed = Range.clip(fieldMotion.mag() / (slowDist * speed), -speed, speed);
+            PVector botMotion = fieldMotion.setMag(botSpeed).rotate(Math.toRadians(-odometry.getRot()));
 
-        PVector fieldMotion = PVector.sub(targetPos.get(0), odometry.getPos());
-        double botSpeed = Range.clip(fieldMotion.mag() / (slowDist * speed), -speed, speed);
-        PVector botMotion = fieldMotion.setMag(botSpeed).rotate(Math.toRadians(-odometry.getRot()));
+            double botTurn;
+            if (leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
+                botTurn = 0;
+            } else if (leastDirection(odometry.getRot(), targetRot.get(0))) {
+                botTurn = turnSpeed;
+            } else {
+                botTurn = -turnSpeed;
+            }
 
-        double botTurn;
-        if (leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
-            botTurn = 0;
-        } else if (leastDirection(odometry.getRot(), targetRot.get(0))) {
-            botTurn = turnSpeed;
-        } else {
-            botTurn = -turnSpeed;
+            wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
+
+            if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
+                if (states.get(0) != null) stateMachine.addState(states.get(0));
+                states.remove(0);
+                targetPos.remove(0);
+                targetRot.remove(0);
+            }
+
+            if (getDebugMode()) {
+                telemetry.addLine("Target X:" + targetPos.get(0).x + " Y:" + targetPos.get(0).y + " R:" + targetRot.get(0));
+            }
         }
-
-        wheelController.moveXYTurn(botMotion.x, botMotion.y, botTurn);
-
-        if (PVector.dist(odometry.getPos(), targetPos.get(0)) < stopDist && leastDist(odometry.getRot(), targetRot.get(0)) < stopDist) {
-            if (states.get(0) != null) stateMachine.addState(states.get(0));
-            states.remove(0);
-            targetPos.remove(0);
-            targetRot.remove(0);
-        }
-
-        if (getDebugMode()) telemetry.addLine("Target: (" + targetPos.get(0).x + ", " + targetPos.get(0).y + ") " + targetRot.get(0) + "°");
     }
 
     public void setTargetXYRot(PVector pos, double rot) {
