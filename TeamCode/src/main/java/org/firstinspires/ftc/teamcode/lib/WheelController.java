@@ -19,7 +19,7 @@ public class WheelController { //This class can be changed for each drive train 
 
     public boolean crispDrive = false; //CrispDrive - Uses encoders to ensure stops
     private int stopTickCount = 2; //less than this # of ticks of movement will be zero power
-    private int maxCrispnessChange = 30; //more than or = to this # of ticks will be full power
+    private int maxCrispnessChange = 120; //more than or = to this # of ticks will be full power
     private int stopFrontLeftEncoder = 0;
     private int stopFrontRightEncoder = 0;
     private int stopBackLeftEncoder = 0;
@@ -172,7 +172,7 @@ public class WheelController { //This class can be changed for each drive train 
 
     void crispen(DcMotor motor, int lastEncoder) {
         //Check if unpowered but still moving
-        if (Math.abs(motor.getPower()) < 0.01 && Math.abs(lastEncoder-motor.getCurrentPosition()) >= stopTickCount) {
+        if (Math.abs(motor.getPower()) < 0.01 && Math.abs(lastEncoder - motor.getCurrentPosition()) >= stopTickCount) {
             //If so, reverse power!
             backRight.setPower(Range.clip(
                 (motor.getCurrentPosition() - lastEncoder) / maxCrispnessChange,

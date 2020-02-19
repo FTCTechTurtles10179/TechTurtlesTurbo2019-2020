@@ -41,7 +41,7 @@ public class TurtlesTeleOp extends Configurator {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        wheelController.crispDrive = true; //Make the driving crispy
+        wheelController.crispDrive = false; //Make the driving un-crispy
 
         stateMachine.addState(new State(() -> { //Create a new state
             if ((gamepad1.right_bumper || gamepad1.left_bumper) && !slowModeJustSwapped) {

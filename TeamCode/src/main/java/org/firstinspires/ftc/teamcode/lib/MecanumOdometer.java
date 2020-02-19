@@ -126,7 +126,6 @@ public class MecanumOdometer { //IMPORTANT!!!!! When configuring +Y is left, +X 
         State odometryState = new State(() -> {
             //Run both odometry loops
             odometryLoop();
-            //imuLoop();
 
             //Telemetry
             if (config.getDebugMode()) config.telemetry.addLine("Pos: (" + Math.round(robotPos.x) + ", " + Math.round(robotPos.y) + ")");
