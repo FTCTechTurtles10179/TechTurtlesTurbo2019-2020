@@ -39,7 +39,7 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
 
         //Initialize starting position and rotation
         PVector startingPos = new PVector(342.9,83.82);
-        initializeOdometry(startingPos,-90);
+        initializeOdometry(startingPos,270);
 
         //Set waypoints
         PVector stone = new PVector(266.7,91.44);
@@ -49,7 +49,7 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
 
         State strafeLeftUnderSkybridge = new SingleState(() -> {//Creates a new SingleState, strafeLeftUnderSkybridge
             //Strafe left to Navigate
-            setTargetXYRot(underSkybridge, -90);
+            setTargetXYRot(underSkybridge, 270);
         }, "StrafeLeftUnderSkybridge");//Name the state StrafeLeftUnderSkybridge
 
         State releaseStone = new State(() -> {//Creates a new state, releaseStone
@@ -64,8 +64,8 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
         },"ReleaseStone");//Name the state ReleaseStone
 
         State goToTriangleSide = new State(() -> {//Creates a new state, goToTriangleSide
-            setTargetXYRot(backFromStones, -90); //Move back from stone to avoid collision with skybridge
-            setTargetXYRot(foundation,-90, releaseStone);//Move past the skybridge and pass releaseStone into the state machine
+            setTargetXYRot(backFromStones, 270); //Move back from stone to avoid collision with skybridge
+            setTargetXYRot(foundation,270, releaseStone);//Move past the skybridge and pass releaseStone into the state machine
             return false;
         }, () -> {}, "GoToTriangleSide");//Name the state GoToTriangleSide
 
@@ -81,7 +81,7 @@ public class NearBlueSquareStackless extends AutonomousLibrary {
         }, 2000, "GrabStone");//Name the state GrabStone and run for 2 seconds
 
         State goToStone = new SingleState(() -> {//Creates a new SingleState, goToStone
-            setTargetXYRot(stone, -90, grabStone);//Line up with stone and pass grabStone into the state machine
+            setTargetXYRot(stone, 270, grabStone);//Line up with stone and pass grabStone into the state machine
         }, "GoToStone");//Name the state GoToStone
 
         stateMachine.addState(goToStone);//Passes goToStone into the state machine, calling it

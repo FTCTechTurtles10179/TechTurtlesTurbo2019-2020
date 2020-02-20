@@ -12,9 +12,11 @@ import org.firstinspires.ftc.teamcode.lib.util.states.State;
 @Autonomous(name="NearRedSquare")
 public class NearRedSquare extends AutonomousLibrary {
 
-    //Declare claw servo and armMotor
+    //Declare servos and armMotor
     Servo claw;
     Servo claw2;
+    Servo foundationGrabber;
+    Servo foundationGrabber2;
     DcMotor armMotor;
 
     //Initialize armDownEncoder and armUpEncoder values
@@ -23,16 +25,25 @@ public class NearRedSquare extends AutonomousLibrary {
 
     @Override
     public void setupOpMode() {
-        //Get the claw servos
+        //Get the claw and foundationGrabber servos
         claw = getServo("claw");
         claw2 = getServo("claw2");
+        foundationGrabber = getServo("foundationGrabber");
+        foundationGrabber2 = getServo("foundationGrabber2");
+
         armMotor = getDcMotor("armMotor");//Get the armMotor
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//Set encoder value of armMotor to 0
         armMotor.setTargetPosition(armDownEncoder);//Lower arm
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        claw.setPosition(0);//Open claw
+        //Open claw
+        claw.setPosition(0);
+        claw2.setPosition(1);
+
+        //Open foundationGrabber
+        foundationGrabber.setPosition(0);
+        foundationGrabber2.setPosition(1);
 
         //Initialize starting position and rotation
         PVector startingPos = new PVector(22.86,83.82);
@@ -51,7 +62,11 @@ public class NearRedSquare extends AutonomousLibrary {
         }, "StrafeRightUnderSkybridge");//Name the state StrafeRightUnderSkybridge
 
         State moveBackToLoadingZone = new State(() -> {//Creates a new State, moveBackToLoadingZone
-            setTargetXYRot(loadingZone, -90);
+            setTargetXYRot(loadingZone, 270);
+
+            //Releases foundation
+            foundationGrabber.setPosition(0);
+            foundationGrabber2.setPosition(1);
             return false;
         }, () -> {
             stateMachine.addState(strafeRightUnderSkybridge);
@@ -59,7 +74,12 @@ public class NearRedSquare extends AutonomousLibrary {
 
         State turnAroundToFoundation = new State(() -> {
             //Turn around to present the foundation grabber to the foundation
-            setTargetXYRot(foundation, -90);
+            setTargetXYRot(foundation, 270);
+
+            //Grab foundation
+            foundationGrabber.setPosition(1);
+            foundationGrabber2.setPosition(0);
+
             return false;
         }, () -> {
             stateMachine.addState(moveBackToLoadingZone);

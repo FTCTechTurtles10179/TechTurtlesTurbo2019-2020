@@ -17,8 +17,8 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
     public void setupOpMode() {
         foundationGrabber = getServo("foundationGrabber"); //Get the foundation grabber servo
         foundationGrabber2 = getServo("foundationGrabber2");
-        foundationGrabber.setPosition(1);
-        foundationGrabber2.setPosition(0);
+        foundationGrabber.setPosition(0);
+        foundationGrabber2.setPosition(1);
 
         //Set starting position and rotation
         initializeOdometry(new PVector(342.9, 281.94), 90);
@@ -34,8 +34,8 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
 
         State releasePlatform = new State(() -> {
             //Pull up the foundation grabber servo
-            foundationGrabber.setPosition(1);
-            foundationGrabber2.setPosition(0);
+            foundationGrabber.setPosition(0);
+            foundationGrabber2.setPosition(1);
             return false;
         }, () -> { //When the state is done
             stateMachine.addState(strafeToBridge); //Run this state
@@ -47,8 +47,8 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
 
         State grabPlatform = new State(() -> {
             //Push down the foundation grabber servo
-            foundationGrabber.setPosition(0);
-            foundationGrabber2.setPosition(1);
+            foundationGrabber.setPosition(1);
+            foundationGrabber2.setPosition(0);
             return false;
         }, () -> { //When the state is done
             stateMachine.addState(pullBackFoundation); //Run this state
