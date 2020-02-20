@@ -24,7 +24,7 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
         initializeOdometry(new PVector(342.9, 281.94), 90);
 
         //Initialize waypoints
-        PVector foundation = new PVector(266.7,91.44);
+        PVector foundation = new PVector(266.7,311.76);
         PVector loadingZone = new PVector(342.9,311.76);
         PVector underSkybridge = new PVector(269.7, 182.88);
 
