@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.lib.util.data.PVector;
 import org.firstinspires.ftc.teamcode.lib.util.states.StartState;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
 
-@Autonomous(name="NearRedTriangle")
-public class NearRedTriangle extends AutonomousLibrary { //Note: the states are backwards, the one at the end runs first
+@Autonomous(name="NearBlueTriangle")
+public class NearBlueTriangle extends AutonomousLibrary {
     Servo foundationGrabber;
     Servo foundationGrabber2;
 
@@ -24,13 +24,14 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
         initializeOdometry(new PVector(342.9, 281.94), 90);
 
         //Initialize waypoints
-        PVector foundation = new PVector(266.7,91.44);
-        PVector loadingZone = new PVector(342.9,311.76);
-        PVector underSkybridge = new PVector(269.7, 182.88);
+        PVector foundation = new PVector(99.06, 311.76);
+        PVector loadingZone = new PVector(22.86, 311.76);
+        PVector underSkybridge = new PVector(96.06, 182.88);
 
         State strafeToBridge = new StartState(() -> {
             setTargetXYRot(underSkybridge, 90);
-        }, () -> true, () -> {}, "StrafeRightToBridge");
+        }, () -> true, () -> {
+        }, "StrafeRightToBridge");
 
         State releasePlatform = new State(() -> {
             //Pull up the foundation grabber servo
@@ -43,7 +44,8 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
 
         State pullBackFoundation = new StartState(() -> {
             setTargetXYRot(loadingZone, 90, releasePlatform);
-        }, () -> true, () -> {},"MoveBackwardFromPlatform");
+        }, () -> true, () -> {
+        }, "MoveBackwardFromPlatform");
 
         State grabPlatform = new State(() -> {
             //Push down the foundation grabber servo
@@ -56,7 +58,8 @@ public class NearRedTriangle extends AutonomousLibrary { //Note: the states are 
 
         State moveToPlatform = new StartState(() -> {
             setTargetXYRot(foundation, 90, grabPlatform);
-        }, () -> true, () -> {}, "MoveForwardToPlatform");
+        }, () -> true, () -> {
+        }, "MoveForwardToPlatform");
 
         stateMachine.addState(moveToPlatform); //After we setup the states, add the first one to our stateMachine
     }
