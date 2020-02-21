@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.lib.util.data.PVector;
 import org.firstinspires.ftc.teamcode.lib.util.states.State;
@@ -46,6 +47,13 @@ public class DeadWheelOdometer {
     double centerCircumference = Math.abs(centerWheelPos.y - ((rightWheelPos.y + leftWheelPos.y)/2)) * 2.0 * Math.PI;
 
     private void odometryLoop() {
+
+        DeadWheelEncoderValues currentEncoderValues = new DeadWheelEncoderValues(config); // Get current encoder values
+        Position2D position2D = odometryCalculation(currentEncoderValues);
+    }
+
+
+    public Position2D odometryCalculation(DeadWheelEncoderValues currentEncoderValues) {
         /* The math behind this code: (W for omega)
         If W_n is the rotation change for wheel n, r is the wheel radius, and K is |X of wheel n| + |Y of wheel n|,
         then we can find the robot's velocity V and rotation velocity W_v using
@@ -55,9 +63,9 @@ public class DeadWheelOdometer {
         r * (-1/(4K)W_1 - 1/(4K)W_2 + 1/(4K)W_3 + 1/(4K)W_4)   =   W_v
         */
 
-        double leftDistChange = ((oldLeftEncoder - leftOdometer.getCurrentPosition()) * ticksToDegrees) * wheelCircumference;
-        double rightDistChange = ((oldRightEncoder - rightOdometer.getCurrentPosition()) * ticksToDegrees) * wheelCircumference;
-        double centerDistChange = ((oldBackLeftEncoder - centerOdometer.getCurrentPosition()) * ticksToDegrees) * wheelCircumference;
+        double leftDistChange = ((oldLeftEncoder - currentEncoderValues.left) * ticksToDegrees) * wheelCircumference;
+        double rightDistChange = ((oldRightEncoder - currentEncoderValues.right) * ticksToDegrees) * wheelCircumference;
+        double centerDistChange = ((oldBackLeftEncoder - currentEncoderValues.center) * ticksToDegrees) * wheelCircumference;
 
         double localRobotRot = (((leftDistChange - rightDistChange) / 2.0) / turnCircumference) * 360.0 * turnerThinger;
 
@@ -82,9 +90,11 @@ public class DeadWheelOdometer {
         setRot(clippedRotation);
 
         //Update all of the "old" values
-        oldLeftEncoder = leftOdometer.getCurrentPosition();
-        oldRightEncoder = rightOdometer.getCurrentPosition();
-        oldBackLeftEncoder = centerOdometer.getCurrentPosition();
+        oldLeftEncoder = currentEncoderValues.left;
+        oldRightEncoder = currentEncoderValues.right;
+        oldBackLeftEncoder = currentEncoderValues.center;
+
+        return new Position2D(robotPos,clippedRotation);
     }
     
     public DeadWheelOdometer(Configurator config) { //Store the config
@@ -130,4 +140,88 @@ public class DeadWheelOdometer {
     public void setRot(double rot) {
         robotRot = rot;
     }
+
+
+    public static class DeadWheelEncoderValues{
+        public double left = 0;
+        public double center = 0;
+        public double right = 0;
+
+        public DeadWheelEncoderValues() {
+        }
+
+        public DeadWheelEncoderValues(double left, double center, double right) {
+            this.left = left;
+            this.center = center;
+            this.right = right;
+        }
+
+        // Derive current odometry values directly from configurator/encoder values.
+        public DeadWheelEncoderValues(Configurator configurator) {
+            DcMotor leftOdometer = configurator.getDcMotor("leftOdometer");
+            DcMotor centerOdometer = configurator.getDcMotor("centerOdometer");
+            DcMotor rightOdometer = configurator.getDcMotor("rightOdometer");
+
+            this.left = leftOdometer.getCurrentPosition();
+            this.center = centerOdometer.getCurrentPosition();
+            this.right = rightOdometer.getCurrentPosition();
+        }
+
+        public DeadWheelEncoderValues subtractAndReturn(DeadWheelEncoderValues deadWheelEncoderValues) {
+            return new DeadWheelEncoderValues(
+                    left - deadWheelEncoderValues.left,
+                    center - deadWheelEncoderValues.center,
+                    right - deadWheelEncoderValues.right);
+        }
+
+        public DeadWheelEncoderValues addAndReturn(DeadWheelEncoderValues deadWheelEncoderValues) {
+            return new DeadWheelEncoderValues(
+                    left + deadWheelEncoderValues.left,
+                    center + deadWheelEncoderValues.center,
+                    right + deadWheelEncoderValues.right);
+        }
+
+        public String toString() {
+            String format_command = "%8.1f";
+            return String.format(format_command,left) + ",  " + String.format(format_command,center) + ", " + String.format(format_command,right) + "";
+        }
+
+        public DeadWheelEncoderValues copy() {
+            return new DeadWheelEncoderValues(this.left,this.center,this.right);
+        }
+    }
+
+
+    static public class Position2D {
+        public PVector position = new PVector(0,0);
+        public double theta = 0;
+
+        public Position2D(PVector position, double theta) {
+            this.position = position.copy();
+            this.theta = theta;
+        }
+
+        public Position2D(double x, double y, double theta) {
+            this.position = new PVector(x,y);
+            this.theta = theta;
+        }
+
+        public double getX() {
+            return position.x;
+        }
+
+        public double getY() {
+            return position.y;
+        }
+
+        public double getTheta() {
+            return theta;
+        }
+
+        public String toString() {
+            String format_command = "%8.2f";
+            return String.format(format_command,position.x) + ",  " + String.format(format_command,position.y) + ", " + String.format(format_command,theta) + "";
+        }
+    }
+
 }

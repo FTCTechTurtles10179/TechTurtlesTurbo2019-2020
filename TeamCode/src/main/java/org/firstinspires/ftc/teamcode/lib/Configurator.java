@@ -20,7 +20,7 @@ public abstract class Configurator extends OpMode{
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    private boolean debugMode = false;
+    protected boolean debugMode = false;
 
     public StateMachine stateMachine;
     public WheelController wheelController;

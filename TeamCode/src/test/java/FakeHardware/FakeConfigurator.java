@@ -2,6 +2,7 @@ package FakeHardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.Configurator;
 import FakeHardware.FakeDcMotorLib.FakeDcMotor;
 
@@ -10,6 +11,12 @@ import java.util.HashMap;
 
 
 public class FakeConfigurator extends Configurator {
+
+    Telemetry telemetry = new FakeTelemetryLib.FakeTelemetry();
+
+
+
+
 
     @Override
     public void setupOpMode() {
@@ -29,5 +36,10 @@ public class FakeConfigurator extends Configurator {
         return (DcMotor) motor;
     }
 
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+//    config.telemetry.addLine('caption','content')
 
 }
