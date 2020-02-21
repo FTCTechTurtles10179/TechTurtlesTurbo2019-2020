@@ -19,7 +19,7 @@ public abstract class AutonomousLibrary extends Configurator {
     ArrayList<PVector> targetPos = new ArrayList<>();
     ArrayList<Double> targetRot = new ArrayList<>();
     ArrayList<State> states = new ArrayList<>();
-    MecanumOdometer odometry = new MecanumOdometer(this);
+    DeadWheelOdometer odometry = new DeadWheelOdometer(this);
 
     public void initializeOdometry(PVector startingPos, double startingRot) {
         odometry.setPos(startingPos);
